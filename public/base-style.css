@@ -132,6 +132,7 @@ form {
 }
 
 .finder__input {
+    font-family: "Zeyada", cursive;
     height: 100%;
     flex: 1;
     border: none;
@@ -139,7 +140,7 @@ form {
     outline: none;
     font-size: 1rem;
     letter-spacing: 0.75px;
-    width: 100%;
+    width: 250%;
     padding: 0.5rem;
 }
 
@@ -190,12 +191,11 @@ form {
 }
 
 .quote {
+    font-family: "Zeyada", cursive;
     text-align: center;
     margin-top: 170px;
     font-size: 1.5em;
-    font-style: italic;
     color: #34252F;
-    text-decoration-line: line-through;
 }
 
 footer {
@@ -453,6 +453,7 @@ tr:nth-child(odd) td {
         word-break: break-all;
     }
 }
+
 /*...............................*/
 @media (max-width: 768px) {
     .book_wrapper {
