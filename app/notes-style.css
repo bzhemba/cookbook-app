@@ -1,0 +1,184 @@
+@import url('https://fonts.googleapis.com/css2?family=Freehand&family=Zeyada&display=swap');
+
+h1 {
+  font-size: 60px;
+  padding: 10px;
+  margin-left: 5px;
+  font-family: "Freehand", cursive;
+  font-weight: 400;
+  font-style: normal;
+  color: #A57548;
+}
+
+nav{
+  position: relative;
+  top: 50px;
+}
+nav > ul {
+  display: flex;
+  justify-content: space-evenly;
+  gap: 20px;
+  list-style-type: none;
+  padding: 10px;
+}
+
+nav > li {
+  margin: 0 10px;
+}
+
+a {
+  color: #808080;
+  text-decoration: none;
+  font-family: "Zeyada", cursive;
+  font-size: 25px;
+}
+
+nav > ul > li:hover a {
+  color: #A57548;
+  font-family: "Zeyada", cursive;
+  font-size: 27px;
+}
+.activeLink {
+  color: black;
+}
+
+body {
+  background-color: #FCFDAF;
+  background-image: url("./images/cook3.png"), url("./images/cook9.png"), url("./images/cook6.png"), url("./images/cook12.png");
+  background-position: right 6%, left 5%, left 95%, right 70%;
+  background-repeat: no-repeat;
+  background-size: 300px, 260px, 300px, 300px;
+  display: flex;
+  flex-direction: column;
+  font-family: 'Shadows Into Light', cursive;
+  min-height: 100vh;
+}
+
+button {
+  height: fit-content;
+  cursor: pointer;
+  color: black;
+  background-color: #c9d1c8;
+}
+
+.app {
+  width: 600px;
+  margin-top: 50px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.input-header {
+  display: flex;
+  justify-content: right;
+  align-items: center;
+  color: white;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  padding: 0px 0px 10px 0px;
+}
+
+.note-input input {
+  width: 250px;
+  font-family: inherit;
+  border: none;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+  padding: 10px;
+  outline: none;
+}
+
+.note-input button {
+  color: #A57548;
+  font-family: inherit;
+  border: none;
+  padding: 10px;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+.notes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.notes-list i {
+  color: #c9d1c8;
+  cursor: pointer;
+}
+
+.notes-list .fa-pencil-alt {
+  color: #A57548;
+}
+
+.notes-list button {
+  padding: 8px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-family: inherit;
+  border: none;
+}
+
+.item {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  padding: 8px;
+  box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.5);
+}
+
+.input-controller {
+  display: flex;
+  gap: 10px;
+}
+
+.input-controller textarea {
+  width: 100%;
+  outline: none;
+  border: none;
+  resize: none;
+  line-height: 1.4;
+  color: white;
+  border-radius: 10px;
+  background-color: transparent;
+  font-size: 1.2rem;
+  font-family: inherit;
+  transition: all 0.30s ease-in-out;
+}
+
+textarea:focus {
+  box-shadow: 0 0 5px white;
+}
+
+.edit-controller {
+  display: flex;
+  gap: 5px;
+}
+
+.update-controller {
+  display: none;
+}
+
+@media(max-width: 768px) {
+  .app {
+    width: 95%;
+    text-align: center;
+  }
+
+  .input-header {
+    flex-direction: column;
+    padding-bottom: 20px;
+  }
+
+  .note-input {
+    display: flex;
+  }
+
+  .note-input input {
+    width: 300px;
+  }
+
+}
