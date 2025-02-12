@@ -20,7 +20,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "engines": {
-    "node": ">=0.10.3 <15"
+    "node": ">=21.0.0 <22"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
