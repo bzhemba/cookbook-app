@@ -1,7 +1,7 @@
 const recipes_container = document.querySelector(".recipes_container");
 const fetchApi = async (query) => {
     recipes_container.innerHTML = `
-  <img src="/images/loading.gif" class="loader_img" />`;
+  <img src="../images/loading.gif" class="loader_img" />`;
 
     try {
         await fakeDelay(2000);

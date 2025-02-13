@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {{> header}}
+    {{> scripts}}
+    <link rel="stylesheet" href="/public/gallery-style.css"/>
+</head>
+<body>
+<div class="container">
+    <h2 class="heading-text">Find your <span>inspiration</span></h2>
+    {{> navigation}}
+
+    <div class="image-gallery">
+        {{#each data.columns}}
+            <div class="column">
+                {{#each this.images}}
+                    <div class="image-item">
+                        <img src="{{src}}" alt="{{title}}">
+                        <h3>{{title}}</h3>
+                    </div>
+                {{/each}}
+            </div>
+        {{/each}}
+    </div>
+</div>
+
+{{> footer}}
+
+</body>
+</html>

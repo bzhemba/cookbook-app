@@ -1,18 +1,17 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {{> header}}
+    {{> scripts}}
     <meta name="description" content="The best home recipes">
     <meta name="keywords" content="recipes, cooking, food">
-    <link rel="stylesheet" href="../base-style.css">
+    <link rel="stylesheet" href="/public/base-style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Freehand&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Oswald" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed:300,300i,400,400i,700i" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="../scripts/main.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/corejs-typeahead/1.2.1/bloodhound.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/corejs-typeahead/1.2.1/typeahead.jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
@@ -22,15 +21,6 @@
 <body>
 <header>
     <h1 style="text-align: center">Cooking Time</h1>
-    <nav class="nav">
-        <ul>
-            <li><a href="all-recipes.html">all recipes</a></li>
-            <li><a href="recipe-gallery.html">inspiration</a></li>
-            <li><a href="table.html">some examples</a></li>
-            <li><a href="add-recipe.html">add recipe</a></li>
-            <li><a href="./notes.html" class="notes">notes</a></li>
-        </ul>
-    </nav>
     <div class="container">
         <form autocomplete="off">
             <div class="finder">
@@ -53,9 +43,7 @@
     </div>
 </main>
 
-<footer id="code-snippet">
-    <p id="load-time"></p>
-</footer>
-<script src="../scripts/search-script.js"></script>
+{{> footer}}
+<script src="/public/scripts/search-script.js"></script>
 </body>
 </html>

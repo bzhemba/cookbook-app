@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {{> header}}
+    {{> scripts}}
+    <link rel="stylesheet" href="/public/notes-style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Shadows+Into+Light&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+    <title>Notes</title>
+</head>
+
+<body>
+
+{{> navigation}}
+<main class="app">
+    <h1>My Notes...</h1>
+    <div class="input-header">
+        <form id="notesForm" autocomplete="off">
+            <div class="note-input">
+                <input type="text" id="item" name="typename" placeholder="Enter something...">
+                <button id="enter" type="submit">Enter</button>
+            </div>
+        </form>
+    </div>
+    <div class="notes-list"></div>
+</main>
+
+{{> footer}}
+
+</body>
+
+</html>

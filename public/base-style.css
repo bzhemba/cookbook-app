@@ -11,7 +11,7 @@ h1 {
 }
 nav{
     position: relative;
-    top: 50px;
+    top: 250px;
 }
 nav > ul {
     display: flex;
@@ -346,12 +346,6 @@ a#prev_page_button:hover{
     box-sizing: border-box;
 }
 
-html,
-body {
-    padding: 20px;
-    margin: 20px;
-}
-
 body {
     font-family: BlinkMacSystemFont, -apple-system, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
 }
@@ -452,6 +446,19 @@ tr:nth-child(odd) td {
         overflow-wrap: break-word;
         word-break: break-all;
     }
+}
+.login-container {
+    display: grid;
+    grid-template-columns: 1fr auto; /* Две колонки: одна для контента, другая для правого угла */
+    padding: 10px;
+}
+.login-container a {
+    margin: 15px;
+    text-decoration: none;
+    color: black;
+}
+.login-container p {
+    margin: 0;
 }
 
 /*...............................*/

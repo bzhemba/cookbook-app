@@ -1,0 +1,26 @@
+<div class="login-container">
+    {{#if isAuthenticated}}
+        <a>Welcome, {{user.username}}!</a>
+        <a href="/logout">Logout</a>
+        <nav class="nav">
+            <ul>
+                <li><a href="/public/pages/all-recipes.html">all recipes</a></li>
+                <li><a href="/public/pages/recipe-gallery.html">inspiration</a></li>
+                <li><a href="/public/pages/table.html">some examples</a></li>
+                <li><a href="/public/pages/add-recipe.html">add recipe</a></li>
+                <li><a href="/public/pages/notes.html" class="notes">notes</a></li>
+            </ul>
+        </nav>
+    {{else}}
+        <nav class="nav">
+            <ul>
+                <li><a href="/public/pages/all-recipes.html">all recipes</a></li>
+                <li><a href="/public/pages/recipe-gallery.html">inspiration</a></li>
+                <li><a href="/public/pages/table.html">some examples</a></li>
+                <li><a href="/public/pages/notes.html" class="notes">notes</a></li>
+            </ul>
+        </nav>
+        <a href="/login">Login</a>
+    {{/if}}
+</div>
+
