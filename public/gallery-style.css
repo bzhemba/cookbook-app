@@ -107,6 +107,30 @@ footer {
     font-size: 12px;
 }
 
+.login-container {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    padding: 10px;
+}
+.login-container a {
+    margin: 15px;
+    text-decoration: none;
+    color: black;
+}
+.login-container p {
+    margin: 0;
+}
+
+.login-container nav a {
+    color: #808080;
+    text-decoration: none;
+    font-family: "Zeyada", cursive;
+    font-size: 25px;
+}
+
+.login-container .activeLink {
+    color: black;
+}
 
 @media only screen and (min-width: 768px) {
     .image-gallery {

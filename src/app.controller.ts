@@ -20,7 +20,6 @@ export class AppController {
     @Get('login')
     login(@Res() res: Response, @Session() session: any) {
         session.user = {id: 1, username: 'example'};
-        return res.redirect('/');
     }
 
     @Get('logout')
@@ -35,28 +34,43 @@ export class AppController {
     }
 
     @Get('add-recipe')
-    getAddPage(@Res() res: Response) {
-        return res.render('add-recipe.hbs');
+    getAddPage(@Res() res: Response, @Session() session: any) {
+        const isAuthenticated = !!session.user;
+        const user = session.user || {};
+
+        return res.render('add-recipe.hbs', {
+            isAuthenticated,
+            user,
+        });
     }
 
     @Get('all-recipes')
-    getAllRecipesPage(@Res()
-                          res: Response
-    ) {
-        return res.render('all-recipes.hbs');
+    getAllRecipesPage(@Res() res: Response, @Session() session: any) {
+        const isAuthenticated = !!session.user;
+        const user = session.user || {};
+
+        return res.render('all-recipes.hbs', {
+            isAuthenticated,
+            user,
+        });
     }
 
     @Get('notes')
-    getNotesPage(@Res()
-                     res: Response
-    ) {
-        return res.render('notes.hbs');
+    getNotesPage(@Res() res: Response, @Session() session: any) {
+        const isAuthenticated = !!session.user;
+        const user = session.user || {};
+
+        return res.render('notes.hbs', {
+            isAuthenticated,
+            user,
+        });
     }
 
     @Get('recipe-gallery')
-    getGalleryPage(@Res()
-                       res: Response
-    ) {
+    getGalleryPage(@Res() res: Response, @Session() session: any) {
+        const isAuthenticated = !!session.user;
+        const user = session.user || {};
+
         const data = {
             columns: [
                 {
@@ -113,21 +127,33 @@ export class AppController {
                 }
             ]
         };
-        return res.render('recipe-gallery.hbs', {data});
+        return res.render('recipe-gallery.hbs', {
+            data,
+            isAuthenticated,
+            user,
+        });
     }
 
     @Get('table')
-    getTablePage(@Res()
-                     res: Response
-    ) {
-        return res.render('table.hbs');
+    getTablePage(@Res() res: Response, @Session() session: any) {
+        const isAuthenticated = !!session.user;
+        const user = session.user || {};
+
+        return res.render('table.hbs', {
+            isAuthenticated,
+            user,
+        });
     }
 
     @Get('index')
-    getHomePage(@Res()
-                    res: Response
-    ) {
-        return res.render('index.hbs');
+    getHomePage(@Res() res: Response, @Session() session: any) {
+        const isAuthenticated = !!session.user;
+        const user = session.user || {};
+
+        return res.render('index.hbs', {
+            isAuthenticated,
+            user,
+        });
     }
 }
 
