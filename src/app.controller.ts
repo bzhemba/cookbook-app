@@ -20,6 +20,7 @@ export class AppController {
     @Get('login')
     login(@Res() res: Response, @Session() session: any) {
         session.user = {id: 1, username: 'example'};
+        return res.redirect('/');
     }
 
     @Get('logout')
