@@ -15,4 +15,4 @@ Cookbook — это веб-приложение, предназначенное 
 _Автор:_ _**Баженова Мария**_
 
 
-https://github.com/is-web-y26/m3315-bazhenova/blob/lab-2/src/cookbook-er-diagram.png
+<img src=https://github.com/is-web-y26/m3315-bazhenova/blob/lab-2/src/cookbook-er-diagram.png>
