@@ -31,11 +31,16 @@
     "@nestjs/platform-express": "^11.0.1",
     "@nestjs/serve-static": "^5.0.2",
     "@nestjs/swagger": "^11.0.3",
+    "@nestjs/typeorm": "^11.0.0",
     "express-openid-connect": "^2.17.1",
     "express-session": "^1.18.1",
     "hbs": "^4.2.0",
+    "nestjsx-automapper": "^3.1.4",
+    "pg": "^8.13.3",
+    "postgresql": "^0.0.1",
     "reflect-metadata": "^0.2.2",
-    "rxjs": "^7.8.1"
+    "rxjs": "^7.8.1",
+    "typeorm": "^0.3.20"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",
