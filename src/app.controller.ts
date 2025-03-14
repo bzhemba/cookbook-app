@@ -1,8 +1,6 @@
 import {Controller, Get, Post, Render, Req, Res, Session, UseGuards} from '@nestjs/common';
 import {Response} from 'express';
-import {join} from "path";
-import {Auth0Guard} from "./auth/auth0.guard";
-import * as Console from "node:console";
+
 
 @Controller()
 export class AppController {
