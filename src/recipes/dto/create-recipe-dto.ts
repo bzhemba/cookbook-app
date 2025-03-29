@@ -2,6 +2,7 @@ import {ApiProperty} from "@nestjs/swagger";
 import {IsNotEmpty, IsString, MaxLength} from "class-validator";
 import {AutoMap} from "nestjsx-automapper";
 import {IngredientDto} from "../../ingredients/dto/ingredient.dto";
+import {UserDto} from "../../users/dto/user.dto";
 export class CreateRecipeDto {
     @ApiProperty()
     @IsNotEmpty()
@@ -16,9 +17,9 @@ export class CreateRecipeDto {
     description: string;
 
     @AutoMap()
-    @ApiProperty({type: [IngredientDto]})
+    @ApiProperty({ isArray: true, type: () => Number })
     @IsNotEmpty()
-    ingredients: IngredientDto[];
+    ingredientIds: number[];
 
     @AutoMap()
     @ApiProperty()
@@ -55,6 +56,11 @@ export class CreateRecipeDto {
     @ApiProperty()
     @IsNotEmpty()
     createdAt: Date;
+
+    @AutoMap()
+    @ApiProperty()
+    @IsNotEmpty()
+    createdByUser?: string;
 
     @ApiProperty()
     @IsNotEmpty()

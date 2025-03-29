@@ -1,6 +1,7 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToMany, JoinTable } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany, OneToOne, JoinTable, JoinColumn } from "typeorm";
 import { AutoMap } from "nestjsx-automapper";
 import {Recipe} from "../../recipes/entities/recipe.entity";
+import {Image} from "../../shared/entities/image.entity";
 
 @Entity('user')
 export class User {
@@ -15,6 +16,15 @@ export class User {
     @AutoMap()
     @Column({ unique: true })
     email: string;
+
+    @AutoMap()
+    @Column({ unique: true })
+    password: string;
+
+    @AutoMap()
+    @OneToOne(() => Image)
+    @JoinColumn()
+    imageData?: Image;
 
     @AutoMap()
     @OneToMany(() => Recipe, recipe => recipe.createdByUser,

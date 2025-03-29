@@ -14,11 +14,7 @@ export class IngredientDto {
 
     @AutoMap()
     @ApiProperty()
-    amount: number;
-
-    @AutoMap()
-    @ApiProperty()
-    imageData: ImageDto;
+    imageData?: ImageDto;
 
     @AutoMap()
     @ApiProperty({ isArray: true, type: () => RecipeDto })

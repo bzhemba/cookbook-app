@@ -12,12 +12,13 @@ export class ImageService {
         private readonly imageRepository: Repository<Image>,
     ) {}
 
-    async createImage(imageDto: ImageDto): Promise<Image> {
+    async createImage(imageData: string): Promise<Image> {
         const image = new Image();
-        image.imageData = imageDto.imageData;
+        image.imageData = imageData;
 
         return this.imageRepository.save(image);
     }
+
 
     async deleteImage(id: number): Promise<void> {
         const image = await this.imageRepository.findOneBy({ id });

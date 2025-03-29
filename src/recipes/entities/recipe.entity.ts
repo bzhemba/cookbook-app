@@ -16,7 +16,7 @@ export class Recipe {
     @AutoMap()
     @ManyToOne(() => User, user => user.recipes,
         {onDelete: 'CASCADE'})
-    createdByUser: User;
+    createdByUser: User | null;
 
     @AutoMap()
     @Column()
@@ -52,17 +52,16 @@ export class Recipe {
     recipeTags: RecipeTag[];
 
     @AutoMap()
-    @OneToMany(() => Category, category => category.recipes,
-        {onDelete: 'CASCADE'})
+    @ManyToOne(() => Category)
+    @JoinColumn()
     category: Category
 
     @AutoMap()
     @Column()
     createdAt: Date;
 
-    @AutoMap()
-    @Column()
-    updatedAt: Date;
+    @Column({ type: 'timestamp', nullable: true })
+    updatedAt: Date | null;
 
     @AutoMap()
     @OneToOne(() => Image)

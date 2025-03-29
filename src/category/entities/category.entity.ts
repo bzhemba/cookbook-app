@@ -1,5 +1,5 @@
 import {AutoMap} from "nestjsx-automapper";
-import {Column, Entity, OneToMany, PrimaryGeneratedColumn} from "typeorm";
+import {Column, Entity, JoinColumn, JoinTable, OneToMany, PrimaryGeneratedColumn} from "typeorm";
 import {Recipe} from "../../recipes/entities/recipe.entity";
 
 @Entity('category')
@@ -11,9 +11,4 @@ export class Category {
     @AutoMap()
     @Column()
     categoryTitle: string;
-
-    @AutoMap()
-    @OneToMany(() => Recipe, recipe => recipe.category,
-        { cascade: true })
-    recipes: Recipe[];
 }

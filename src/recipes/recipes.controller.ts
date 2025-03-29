@@ -6,78 +6,75 @@ import {
   ApiOperation,
   ApiTags
 } from "@nestjs/swagger";
-import { Body, Controller, Delete, Get, Param, Patch, Post, Req, UseGuards } from "@nestjs/common";
+import {Body, Controller, Delete, Get, Param, Patch, Post, Req, UseGuards} from "@nestjs/common";
 import { RecipesService } from "./recipes.service";
-import { AutoMapper, mapFrom } from "nestjsx-automapper";
-import { Auth0Guard } from "../auth/auth0.guard";
 import { Request } from "express";
-import {Recipe} from "./entities/recipe.entity";
 import {RecipeDto} from "./dto/recipe.dto";
-import {UserDto} from "../users/dto/user.dto";
-import {User} from "../users/entities/user.entity";
-import {RecipeTagDto} from "./dto/recipe-tag.dto";
 import {CreateRecipeDto} from "./dto/create-recipe-dto";
 import {UpdateRecipeDto} from "./dto/update-recipe-dto";
+import {JwtAuthGuard} from "../auth/jwt-auth.guard";
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @ApiTags('recipes')
 @Controller('recipes')
-@UseGuards(Auth0Guard)
 export class RecipesController {
-  constructor(
-      private readonly recipeService: RecipesService,
-      private readonly mapper: AutoMapper) {
-    mapper.createMap(User, UserDto)
-    mapper.createMap(Recipe, RecipeDto)
-        .forMember(dest => dest.tags, mapFrom(src => src.tags?.map(t => mapper.map(t, RecipeTagDto))))
-        .forMember(dest => dest.createdByUser, mapFrom(src => mapper.map(src.createdByUser, UserDto)));
-  }
+  constructor(private readonly recipeService: RecipesService, private eventEmitter: EventEmitter2) {}
 
-  @ApiOperation({summary: 'Get recipe by id'})
+  @ApiOperation({summary: 'Get recipe by text'})
   @ApiNotFoundResponse()
   @ApiOkResponse({ type: RecipeDto })
-  @Get(':id')
-  async getRecipeById(@Param('id') id: number) {
-    const recipe = await this.recipeService.getById(id);
-    return this.mapper.map(recipe, RecipeDto);
+  @Get(':text')
+  async getRecipeByText(@Param('text') text: string) {
+    return await this.recipeService.getByText(text);
+  }
+
+  @Get('/suggestions/:text')
+  async getSuggestions(@Param('text') text: string) {
+    return await this.recipeService.getSuggestions(text);
   }
 
   @ApiOperation({summary: 'Get all recipes'})
   @ApiOkResponse({ type: RecipeDto, isArray: true })
   @Get()
   async getAllRecipes() {
-    const projectTags = await this.recipeService.getAll();
-    return this.mapper.mapArray(projectTags, RecipeDto);
+    return await this.recipeService.getAll();
   }
 
-  @UseGuards(Auth0Guard)
   @ApiBearerAuth()
   @ApiOperation({summary: 'Create new recipe'})
   @ApiOkResponse({ type: RecipeDto })
   @ApiNotFoundResponse()
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   @Post()
-  async create(@Body() createRecipeDto : CreateRecipeDto, @Req() request: Request) {
-    const recipe = await this.recipeService.create(request['oidc'].user.nickname, createRecipeDto);
-    return this.mapper.map(recipe, RecipeDto);
+  async create(@Body() createRecipeDto : CreateRecipeDto) {
+    const recipe = await this.recipeService.create(createRecipeDto);
+    this.eventEmitter.emit('recipes', {
+      type: 'RECIPE_CREATED',
+      data: recipe
+    });
+    return recipe
   }
 
-  @UseGuards(Auth0Guard)
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({summary: 'Update recipe'})
   @ApiNotFoundResponse()
   @ApiOkResponse({ type: RecipeDto })
+  @ApiBearerAuth()
   @Patch(':id')
   async updateRecipe(@Param('id') id: number, @Body() updateProjectDto : UpdateRecipeDto, @Req() request: Request) {
-    const recipe = await this.recipeService.update(request['oidc']?.user.nickname, id, updateProjectDto);
-    return this.mapper.map(recipe, UpdateRecipeDto);
+     await this.recipeService.update(request.oidc.user?.nickname, id, updateProjectDto);
   }
 
-  @UseGuards(Auth0Guard)
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({summary: 'Delete recipe by id'})
   @ApiForbiddenResponse()
   @ApiNotFoundResponse()
+  @ApiBearerAuth()
   @Delete(':id')
   async deleteRecipe(@Param('id') id: number, @Req() request: Request) {
-    await this.recipeService.delete(request['oidc']?.user.nickname, id);
+    await this.recipeService.delete(request.oidc.user?.nickname, id);
   }
 }

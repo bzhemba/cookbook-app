@@ -8,8 +8,4 @@ export class CategoryDto {
 
     @ApiProperty()
     categoryTitle: string;
-
-    @AutoMap()
-    @ApiProperty({ isArray: true, type: () => RecipeDto })
-    recipes: RecipeDto[];
 }

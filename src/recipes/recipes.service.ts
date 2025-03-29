@@ -1,6 +1,6 @@
 import {ForbiddenException, Injectable, NotFoundException} from "@nestjs/common";
 import {InjectRepository} from "@nestjs/typeorm";
-import {Repository} from "typeorm";
+import {Like, Repository} from "typeorm";
 import {Recipe} from "./entities/recipe.entity";
 import {User} from "../users/entities/user.entity";
 import {CreateRecipeDto} from "./dto/create-recipe-dto";
@@ -23,25 +23,50 @@ export class RecipesService {
     private readonly recipeTagRepository: Repository<RecipeTag>,
     @InjectRepository(Category)
     private readonly categoryRepository: Repository<Category>,
+    @InjectRepository(Ingredient)
+    private readonly ingredientRepository: Repository<Ingredient>,
   ) {}
 
-  async getById(id: number) {
-    const recipe = await this.recipeRepository.findOne({ where: {id}, relations: { createdByUser: true, recipeTags: true, ingredients: true, category: true, imageData: true} });
-    if (recipe === null) {
-      throw new NotFoundException();
+  async getByText(text: string) {
+    const recipes = await this.recipeRepository.find({
+      where: {
+        title: Like(`%${text}%`),
+      },
+      relations: {
+        createdByUser: true,
+        recipeTags: true,
+        ingredients: true,
+        category: true,
+        imageData: true
+      },
+    });
+
+    if (recipes.length === 0) {
+      throw new NotFoundException(`Рецепты по запросу "${text}" не найдены`);
     }
 
-    return recipe;
+    return recipes;
+  }
+
+  async getSuggestions(text: string) {
+    const recipes = await this.recipeRepository.find({
+      where: {
+        title: Like(`%${text}%`),
+      },
+      select: ['title'],
+      take: 5,
+    });
+    return recipes.map(recipe => recipe.title);
   }
 
   async getAll() {
     return await this.recipeRepository.find({relations: { createdByUser: true, recipeTags: true, ingredients: true, category: true, imageData: true} });
   }
 
-  async create(username: string, createRecipeDto: CreateRecipeDto) {
-    const user = await this.userRepository.findOneBy({ username: username });
+  async create(createRecipeDto: CreateRecipeDto) {
+    const user = await this.userRepository.findOneBy({ username: createRecipeDto.createdByUser});
     if (!user) {
-      throw new NotFoundException(`User with name '${username}' does not exist`);
+      throw new NotFoundException(`user with username '${createRecipeDto.createdByUser}' does not exist`);
     }
 
     const recipeImage = await this.imageRepository.findOneBy({ id: createRecipeDto.imageId });
@@ -68,11 +93,12 @@ export class RecipesService {
     recipe.createdAt = new Date();
     recipe.imageData = recipeImage;
 
-    for (const ingredientDto of createRecipeDto.ingredients) {
-      const ingredient = new Ingredient();
-      ingredient.name = ingredientDto.name;
-      ingredient.amount = ingredientDto.amount;
-      recipe.ingredients.push(ingredient);
+    for (const id of createRecipeDto.ingredientIds) {
+      const ingredientt = await this.ingredientRepository.findOneBy({id: id} )
+      if (!ingredientt) {
+        throw new NotFoundException(`Tag with id '${id}' does not exist`);
+      }
+      recipe.ingredients.push(ingredientt);
     }
 
     for (const tagId of createRecipeDto.recipeTagIds) {
@@ -83,8 +109,6 @@ export class RecipesService {
       recipe.recipeTags.push(tag);
     }
 
-    category.recipes.push(recipe)
-    await this.categoryRepository.save(category);
     await this.recipeRepository.save(recipe);
     return recipe;
   }
@@ -127,7 +151,6 @@ export class RecipesService {
       recipe.ingredients = updateRecipeDto.ingredients.map(ingredientDto => {
         const ingredient = new Ingredient();
         ingredient.name = ingredientDto.name;
-        ingredient.amount = ingredientDto.amount;
         return ingredient;
       });
     }
@@ -177,7 +200,7 @@ export class RecipesService {
       throw new NotFoundException(`Recipe with id '${id}' does not exist`);
     }
 
-    if (recipe.createdByUser.username !== username) {
+    if (recipe.createdByUser?.username !== username) {
       throw new ForbiddenException(`User can't delete project with id ${id}`);
     }
 

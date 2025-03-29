@@ -3,18 +3,30 @@ import {Injectable, UnauthorizedException, UseGuards} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from '../users/user.service';
 import * as bcrypt from 'bcrypt';
-import {Auth0Guard} from "./auth0.guard";
+import {CreateUserDto} from "../users/dto/create-user.dto";
+import {Session} from "express-openid-connect";
 
 @Injectable()
-@UseGuards(Auth0Guard)
 export class AuthService {
     constructor(
         private userService: UserService,
         private jwtService: JwtService,
     ) {}
 
-    async signIn(nickname: string, pass: string): Promise<{ access_token: string }> {
-        const user = await this.userService.getByNickname(nickname);
+    async signIn(username: string, pass: string, email: string): Promise<{ message: string }> {
+        const hashedPassword = await bcrypt.hash(pass, 10);
+
+        const user = new CreateUserDto()
+        user.username = username
+        user.email = email
+        user.password = hashedPassword;
+        await this.userService.createUser(user);
+
+        return { message: 'User registered successfully' };
+    }
+
+    async logIn(username: string, pass: string, session: Session): Promise<{ access_token: string }> {
+        const user = await this.userService.getByUsername(username);
         if (!user) {
             throw new UnauthorizedException('User not found');
         }
@@ -25,8 +37,11 @@ export class AuthService {
         }
 
         const payload = { sub: user.id, username: user.username };
+        session.user = { username };
+        const token = this.jwtService.sign(payload);
+
         return {
-            access_token: await this.jwtService.signAsync(payload),
+            access_token: token,
         };
     }
 }

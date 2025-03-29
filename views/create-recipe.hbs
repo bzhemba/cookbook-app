@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {{> header}}
+    {{> scripts}}
+    <title>Create Recipe</title>
+    <link rel="stylesheet" href="/public/base-style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Freehand&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Oswald" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed:300,300i,400,400i,700i" rel="stylesheet">
+    <script type="module" src="/public/scripts/create-recipe-script.js"></script>
+    <link rel="stylesheet" href="/public/create-recipe-style.css" type="text/css"/>
+    <link href="/public/MultiSelect.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<div class="container">
+    <h1>Create Recipe</h1>
+    <form id="recipeForm">
+        <div class="form-group">
+            <label for="name">Recipe Name</label>
+            <input type="text" id="name" name="name" required maxlength="50">
+        </div>
+
+        <div class="form-group">
+            <label for="description">Description</label>
+            <textarea id="description" name="description" required maxlength="100"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="ingredients">Ingredients</label>
+            <div id="ingredientsList">
+                <select id="dynamic" name="dynamic"></select>
+            </div>
+            <button type="button" id="createIngredient">Create New Ingredient</button>
+        </div>
+
+        <div class="form-group">
+            <label for="instructions">Instructions</label>
+            <textarea id="instructions" name="instructions" required maxlength="400"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="prepTime">Preparation Time (minutes)</label>
+            <input type="number" id="prepTime" name="prepTime" required>
+        </div>
+
+        <div class="form-group">
+            <label for="cookTime">Cooking Time (minutes)</label>
+            <input type="number" id="cookTime" name="cookTime" required>
+        </div>
+
+        <div class="form-group">
+            <label for="servings">Servings</label>
+            <input type="number" id="servings" name="servings" required>
+        </div>
+
+        <div class="form-group">
+            <label for="tags">Tags</label>
+            <div id="tagsList">
+                <select id="dynamic-tags" name="dynamic-tags"></select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="categories">Categories</label>
+            <div id="categoriesList">
+                <select id="dynamic-categories" name="dynamic-categories"></select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="image">Upload Image</label>
+            <input type="file" id="image" name="image" accept="image/*">
+        </div>
+
+        <button type="submit">Create Recipe</button>
+    </form>
+</div>
+
+<div id="ingredientModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Create New Ingredient</h2>
+        <form id="ingredientForm">
+            <div class="form-group">
+                <label for="ingredientName">Ingredient Name</label>
+                <input type="text" id="ingredientName" name="ingredientName" required>
+            </div>
+            <div class="form-group">
+                <label for="ingredientImage">Ingredient Image</label>
+                <input type="file" id="ingredientImage" name="ingredientImage" accept="image/*">
+            </div>
+            <button type="submit">Create Ingredient</button>
+        </form>
+    </div>
+</div>
+<script src="/public/scripts/MultiSelect.js"></script>
+</body>
+</html>

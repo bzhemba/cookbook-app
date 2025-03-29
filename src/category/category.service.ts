@@ -16,25 +16,15 @@ export class CategoryService {
 
 
     async create(categoryDto: CategoryDto): Promise<Category> {
-        const recipes = await Promise.all(
-            categoryDto.recipes.map(async (recipeDto) => {
-                const recipe = await this.recipeRepository.findOneBy({ id: recipeDto.id });
-                if (!recipe) {
-                    throw new NotFoundException(`Recipe with id '${recipeDto.id}' not found`);
-                }
-                return recipe;
-            }),
-        );
 
         const category = new Category();
         category.categoryTitle = categoryDto.categoryTitle;
-        category.recipes = recipes;
 
         return this.categoryRepository.save(category);
     }
 
     async findAll(): Promise<Category[]> {
-        return this.categoryRepository.find({ relations: ['recipes'] });
+        return this.categoryRepository.find();
     }
 
     async findOne(id: number): Promise<Category> {
@@ -54,18 +44,7 @@ export class CategoryService {
             throw new NotFoundException(`Category with id '${id}' not found`);
         }
 
-        const recipes = await Promise.all(
-            categoryDto.recipes.map(async (recipeDto) => {
-                const recipe = await this.recipeRepository.findOneBy({ id: recipeDto.id });
-                if (!recipe) {
-                    throw new NotFoundException(`Recipe with id '${recipeDto.id}' not found`);
-                }
-                return recipe;
-            }),
-        );
-
         category.categoryTitle = categoryDto.categoryTitle;
-        category.recipes = recipes;
 
         return this.categoryRepository.save(category);
     }

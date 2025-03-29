@@ -1,31 +1,42 @@
 import {
-  ApiBadRequestResponse, ApiBearerAuth, ApiForbiddenResponse,
+  ApiBadRequestResponse,
+  ApiBearerAuth,
+  ApiForbiddenResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
   ApiTags
 } from "@nestjs/swagger";
-import { Body, Controller, Delete, Get, Param, Patch, Req, UseGuards } from "@nestjs/common";
+import {Body, Controller, Delete, Get, Param, Patch, Post, Req, UseGuards} from "@nestjs/common";
 import { UserService } from "./user.service";
 import { AutoMapper } from "nestjsx-automapper";
 import { User } from "./entities/user.entity";
 import { UserDto } from "./dto/user.dto";
-import { Auth0Guard } from "../auth/auth0.guard";
-import { Request } from "express";
+import {CreateUserDto} from "./dto/create-user.dto";
+import {JwtAuthGuard} from "../auth/jwt-auth.guard";
 
-@UseGuards(Auth0Guard)
 @ApiTags('user')
 @Controller('users')
+@UseGuards(JwtAuthGuard)
 export class UserController {
   constructor(
       private readonly userService: UserService,
       private readonly mapper: AutoMapper) {
     mapper.createMap(User, UserDto);
   }
+  @ApiOperation({summary: 'Get user by id'})
+
+  @ApiNotFoundResponse()
+  @ApiBearerAuth()
+  @ApiOkResponse({ type: UserDto })
+  @Post()
+  async createUser(@Body() body: CreateUserDto) {
+    await this.userService.createUser(body);
+  }
 
   @ApiOperation({summary: 'Get user by id'})
-  @ApiBearerAuth()
   @ApiNotFoundResponse()
+  @ApiBearerAuth()
   @ApiOkResponse({ type: UserDto })
   @Get(':id')
   async getById(@Param('id') id: number) {
@@ -34,8 +45,8 @@ export class UserController {
   }
 
   @ApiOperation({summary: 'Get all users'})
-  @ApiBearerAuth()
   @ApiForbiddenResponse()
+  @ApiBearerAuth()
   @ApiOkResponse({ type: UserDto, isArray: true })
   @Get()
   async findAll() {
@@ -46,6 +57,7 @@ export class UserController {
   @ApiOperation({summary: 'Delete user by id'})
   @ApiBadRequestResponse()
   @ApiNotFoundResponse()
+  @ApiBearerAuth()
   @Delete(':id')
   async delete(@Param('id') id: number) {
     await this.userService.delete(id);

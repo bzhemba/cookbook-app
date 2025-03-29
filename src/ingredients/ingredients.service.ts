@@ -5,6 +5,7 @@ import { Ingredient } from './entities/ingredient.entity';
 import { IngredientDto } from './dto/ingredient.dto';
 import { Image } from '../shared/entities/image.entity';
 import { Recipe } from '../recipes/entities/recipe.entity';
+import {CreateIngredientDto} from "./dto/create-ingredient.dto";
 
 @Injectable()
 export class IngredientsService {
@@ -18,33 +19,18 @@ export class IngredientsService {
     ) {}
 
 
-    async create(ingredientDto: IngredientDto): Promise<Ingredient> {
-        const image = await this.imageRepository.findOneBy({ id: ingredientDto.imageData.id });
-        if (!image) {
-            throw new NotFoundException(`Image with id '${ingredientDto.imageData.id}' not found`);
-        }
-
-        const recipes = await Promise.all(
-            ingredientDto.recipes.map(async (recipeDto) => {
-                const recipe = await this.recipeRepository.findOneBy({ id: recipeDto.id });
-                if (!recipe) {
-                    throw new NotFoundException(`Recipe with id '${recipeDto.id}' not found`);
-                }
-                return recipe;
-            }),
-        );
+    async create(ingredientDto: CreateIngredientDto): Promise<Ingredient> {
+        const image = await this.imageRepository.findOneBy({ id: ingredientDto.imageId });
 
         const ingredient = new Ingredient();
         ingredient.name = ingredientDto.name;
-        ingredient.amount = ingredientDto.amount;
-        ingredient.imageData = image;
-        ingredient.recipes = recipes;
+        ingredient.imageData = image ? image : undefined;
 
         return this.ingredientRepository.save(ingredient);
     }
 
     async findAll(): Promise<Ingredient[]> {
-        return this.ingredientRepository.find({ relations: ['imageData', 'recipes'] });
+        return this.ingredientRepository.find({ relations: ['recipes'] });
     }
 
     async findOne(id: number): Promise<Ingredient> {
@@ -64,9 +50,9 @@ export class IngredientsService {
             throw new NotFoundException(`Ingredient with id '${id}' not found`);
         }
 
-        const image = await this.imageRepository.findOneBy({ id: ingredientDto.imageData.id });
+        const image = await this.imageRepository.findOneBy({ id: ingredientDto.imageData?.id });
         if (!image) {
-            throw new NotFoundException(`Image with id '${ingredientDto.imageData.id}' not found`);
+            throw new NotFoundException(`Image with id '${ingredientDto.imageData?.id}' not found`);
         }
 
         const recipes = await Promise.all(
@@ -80,7 +66,6 @@ export class IngredientsService {
         );
 
         ingredient.name = ingredientDto.name;
-        ingredient.amount = ingredientDto.amount;
         ingredient.imageData = image;
         ingredient.recipes = recipes;
 

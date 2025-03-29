@@ -15,12 +15,6 @@ export class AppController {
         });
     }
 
-    @Get('login')
-    login(@Res() res: Response, @Session() session: any) {
-        session.user = {id: 1, username: 'example'};
-        return res.redirect('/');
-    }
-
     @Get('logout')
     logout(@Res() res: Response, @Session() session: any) {
         session.destroy((err) => {
@@ -37,7 +31,7 @@ export class AppController {
         const isAuthenticated = !!session.user;
         const user = session.user || {};
 
-        return res.render('add-recipe.hbs', {
+        return res.render('create-recipe.hbs', {
             isAuthenticated,
             user,
         });
@@ -153,6 +147,20 @@ export class AppController {
             isAuthenticated,
             user,
         });
+    }
+
+    @Get('login')
+    getLoginPage(@Res() res: Response, @Session() session: any) {
+        const isAuthenticated = !!session.user;
+        const user = session.user || {};
+
+        return res.render('login.hbs');
+    }
+
+    @Get('sign-in')
+    getSignInPage(@Res() res: Response) {
+
+        return res.render('sign-in.hbs');
     }
 }
 

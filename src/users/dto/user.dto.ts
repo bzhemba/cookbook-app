@@ -16,5 +16,9 @@ export class UserDto {
 
     @AutoMap()
     @ApiProperty()
-    imageData: string | null;
+    password: string
+
+    @AutoMap()
+    @ApiProperty()
+    imageData?: string;
 }

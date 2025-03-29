@@ -4,8 +4,8 @@ import {UserDto} from "../../users/dto/user.dto";
 import {CategoryDto} from "../../category/dto/category.dto";
 import {IngredientDto} from "../../ingredients/dto/ingredient.dto";
 import {ImageDto} from "../../shared/dtos/image.dto";
-import {RecipeTag} from "../entities/recipe-tag.entity";
 import {RecipeTagDto} from "./recipe-tag.dto";
+import {Optional} from "@nestjs/common";
 
 export class RecipeDto {
     @AutoMap()
@@ -45,7 +45,7 @@ export class RecipeDto {
     servings: number;
 
     @AutoMap()
-    @ApiProperty({ type: [String] })
+    @ApiProperty({ type: [RecipeTagDto] })
     recipeTags: RecipeTagDto[];
 
     @AutoMap()
@@ -58,7 +58,8 @@ export class RecipeDto {
 
     @AutoMap()
     @ApiProperty()
-    updatedAt: Date;
+    @Optional()
+    updatedAt?: Date;
 
     @AutoMap()
     @ApiProperty()

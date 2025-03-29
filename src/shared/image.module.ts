@@ -4,10 +4,11 @@ import {RecipesController} from "../recipes/recipes.controller";
 import {AutoMapper} from "nestjsx-automapper";
 import {ImageService} from "./image.service";
 import {Image} from "./entities/image.entity";
+import {ImageController} from "./image.controller";
 
 @Module({
     imports: [TypeOrmModule.forFeature([Image])],
-    controllers: [RecipesController],
+    controllers: [ImageController],
     providers: [ImageService, AutoMapper]
 })
 

@@ -4,6 +4,8 @@ import { Repository } from 'typeorm';
 import { Note } from './entities/note.entity';
 import { NoteDto } from './dto/note.dto';
 import { User } from '../users/entities/user.entity';
+import {CreateNoteDto} from "./dto/crete-note.dto";
+import {UpdateNoteDto} from "./dto/update-note.dto";
 
 @Injectable()
 export class NotesService {
@@ -14,8 +16,8 @@ export class NotesService {
         private readonly userRepository: Repository<User>,
     ) {}
 
-    async createNote(noteDto: NoteDto): Promise<Note> {
-        const user = await this.userRepository.findOneBy({ id: noteDto.createdByUser.id });
+    async createNote(noteDto: CreateNoteDto): Promise<Note> {
+        const user = await this.userRepository.findOneBy({ username: noteDto.createdByUser });
         if (!user) {
             throw new Error('User not found');
         }
@@ -36,14 +38,26 @@ export class NotesService {
         await this.noteRepository.remove(note);
     }
 
-    async updateNote(id: number, noteDto: NoteDto): Promise<Note> {
-        const note = await this.noteRepository.findOneBy({ id });
+    async updateNote(noteDto: UpdateNoteDto): Promise<Note> {
+        const note = await this.noteRepository.findOneBy({ id: noteDto.id });
         if (!note) {
-            throw new NotFoundException(`Note with id '${id}' does not exist`);
+            throw new NotFoundException(`Note with id '${noteDto.id}' does not exist`);
         }
 
         note.text = noteDto.text;
 
         return this.noteRepository.save(note);
+    }
+
+    async getNotes(username: string): Promise<Note[]> {
+        const user = await this.userRepository.findOneBy({ username: username });
+        if (!user) {
+            throw new NotFoundException(`User with username '${username}' does not exist`);
+        }
+        const notes = await this.noteRepository.findBy({ createdByUser: user });
+        if (!notes) {
+            throw new NotFoundException(`Notes created by user '${username}' does not exist`);
+        }
+        return notes;
     }
 }
