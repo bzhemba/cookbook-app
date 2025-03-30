@@ -53,11 +53,9 @@ export class ImageController {
             },
         }),
     }))
-    async uploadFile(@UploadedFile() file: Express.Multer.File, @Req() req: Request) {
-        const protocol = req.protocol;
-        const host = req.get('host');
+    async uploadFile(@UploadedFile() file: Express.Multer.File) {
 
-        const imageUrl = `${protocol}://${host}/uploads/${file.filename}`;
+        const imageUrl = `/uploads/${file.filename}`;
 
         return this.imageService.createImage(imageUrl);
     }

@@ -1,8 +1,7 @@
 import {ApiProperty} from "@nestjs/swagger";
 import {IsNotEmpty, IsString, MaxLength} from "class-validator";
 import {AutoMap} from "nestjsx-automapper";
-import {IngredientDto} from "../../ingredients/dto/ingredient.dto";
-import {UserDto} from "../../users/dto/user.dto";
+
 export class CreateRecipeDto {
     @ApiProperty()
     @IsNotEmpty()

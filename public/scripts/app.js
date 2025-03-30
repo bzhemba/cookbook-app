@@ -56,17 +56,21 @@ const showData = async (resp) => {
             const recipe_card = document.createElement("div");
             recipe_card.setAttribute("class", "recipe_card");
 
+            const baseUrl = `${window.location.protocol}//${window.location.host}`;
+            const imageUrl = `${baseUrl}${imageData.imageData}`;
+
+
             recipe_card.innerHTML = `
-                <div class="recipe-card" id="recipe-card-${id}">
-    <div class="recipe-image-wrapper">
-        <img 
-            src="${imageData.imageData}" 
-            alt="${title}" 
-            class="recipe-image"
-            onerror="this.src='placeholder.jpg'"
-            onload="setPaperOrientation(this)"
-        />
-    </div>
+    <div class="recipe-card" id="recipe-card-${id}">
+        <div class="recipe-image-wrapper">
+            <img 
+                src="${imageUrl}" 
+                alt="${title}" 
+                class="recipe-image"
+                onerror="this.src='placeholder.jpg'"
+                onload="setPaperOrientation(this)"
+            />
+        </div>
     <div class="recipe-content">
         <h2 class="recipe-title">${title}</h2>
         <div class="recipe-meta">

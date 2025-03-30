@@ -1,6 +1,7 @@
 import {AutoMap} from "nestjsx-automapper";
 import {ApiProperty} from "@nestjs/swagger";
 import {Optional} from "@nestjs/common";
+import {IsNotEmpty} from "class-validator";
 
 export class CreateIngredientDto {
     @AutoMap()
@@ -9,6 +10,7 @@ export class CreateIngredientDto {
 
     @AutoMap()
     @ApiProperty()
+    @IsNotEmpty()
     name: string;
 
     @AutoMap()
