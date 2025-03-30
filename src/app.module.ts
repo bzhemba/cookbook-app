@@ -37,7 +37,7 @@ import {NotificationModule} from "./notifications/notification.module";
                 }
             },
             entities: [User, Image, Category, Note, Recipe, Ingredient, RecipeTag],
-            synchronize: true,
+            synchronize: false,
         }),
     }),
         ConfigModule.forRoot({
