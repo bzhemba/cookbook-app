@@ -1,0 +1,59 @@
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Category } from './entities/category.entity';
+import { CategoryDto } from './dto/category.dto';
+import { Recipe } from '../recipes/entities/recipe.entity';
+
+@Injectable()
+export class CategoryService {
+    constructor(
+        @InjectRepository(Category)
+        private readonly categoryRepository: Repository<Category>,
+        @InjectRepository(Recipe)
+        private readonly recipeRepository: Repository<Recipe>,
+    ) {}
+
+
+    async create(categoryDto: CategoryDto): Promise<Category> {
+
+        const category = new Category();
+        category.categoryTitle = categoryDto.categoryTitle;
+
+        return this.categoryRepository.save(category);
+    }
+
+    async findAll(): Promise<Category[]> {
+        return this.categoryRepository.find();
+    }
+
+    async findOne(id: number): Promise<Category> {
+        const category = await this.categoryRepository.findOne({
+            where: { id },
+            relations: ['recipes'],
+        });
+        if (!category) {
+            throw new NotFoundException(`Category with id '${id}' not found`);
+        }
+        return category;
+    }
+
+    async update(id: number, categoryDto: CategoryDto): Promise<Category> {
+        const category = await this.categoryRepository.findOneBy({ id });
+        if (!category) {
+            throw new NotFoundException(`Category with id '${id}' not found`);
+        }
+
+        category.categoryTitle = categoryDto.categoryTitle;
+
+        return this.categoryRepository.save(category);
+    }
+
+    async remove(id: number): Promise<void> {
+        const category = await this.categoryRepository.findOneBy({ id });
+        if (!category) {
+            throw new NotFoundException(`Category with id '${id}' not found`);
+        }
+        await this.categoryRepository.remove(category);
+    }
+}

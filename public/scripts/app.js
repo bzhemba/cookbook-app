@@ -1,30 +1,34 @@
 const recipes_container = document.querySelector(".recipes_container");
 const fetchApi = async (query) => {
     recipes_container.innerHTML = `
-  <img src="../images/loading.gif" class="loader_img" />`;
-
+<div class="preloader">
+    <img src="../images/loading.gif" class="loader_img" alt="Loading..." />
+</div>
+`
     try {
         await fakeDelay(2000);
-        const randomFilter = Math.random() < 0.5;
 
-        if (randomFilter) {
-            query = String.fromCharCode(Math.floor(Math.random() * 13) + 65);
-        } else {
-            query = String.fromCharCode(Math.floor(Math.random() * 13) + 78);
+        const token = localStorage.getItem('auth_token');
+        if (!token) {
+            console.error('No token found, please log in');
+            return;
         }
 
+        const url = query ? `/recipes/${encodeURIComponent(query)}` : "/recipes";
+        const response = await fetch(url, {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+            },
+        });
 
-        const requestApi = await fetch(
-            ` https://www.themealdb.com/api/json/v1/1/search.php?s=${query}`);
-
-        const response = await requestApi.json();
-        console.log(response);
-
-        await showdata(response);
+        if (!response.ok) throw new Error("Failed to load recipes");
+        const data = await response.json();
+        await showData(data);
     } catch (er) {
         recipes_container.innerHTML =
-            "<h1 class='errormsg'> something went wrong </h1>";
-        console.log(er);
+            "<h1 class='errormsg'>Something went wrong. Please try again.</h1>";
+        console.error(er);
     }
 };
 
@@ -32,38 +36,91 @@ function fakeDelay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-const showdata = async (resp) => {
+const showData = async (resp) => {
     try {
         recipes_container.innerHTML = "";
 
-        const result = await resp.meals;
+        const result = await resp;
 
         result.map((value) => {
-            const {strMealThumb, strMeal, strArea, strCategory} = value;
+            const {
+                id,
+                title,
+                category,
+                imageData,
+                ingredients,
+                recipeTags,
+                createdByUser
+            } = value;
 
-            var recipe_card = document.createElement("div");
-
+            const recipe_card = document.createElement("div");
             recipe_card.setAttribute("class", "recipe_card");
 
             recipe_card.innerHTML = `
-          <img src= ${strMealThumb} />
-          <div class="recipe_description">
-            <h2> ${strMeal}</h2>
-            <h3>  <span> ${strArea} </span>  dish</h3>
-            <h5> belongs to <span> ${strCategory}</span> category </h5>
+                <div class="recipe-card" id="recipe-card-${id}">
+    <div class="recipe-image-wrapper">
+        <img 
+            src="${imageData.imageData}" 
+            alt="${title}" 
+            class="recipe-image"
+            onerror="this.src='placeholder.jpg'"
+            onload="setPaperOrientation(this)"
+        />
+    </div>
+    <div class="recipe-content">
+        <h2 class="recipe-title">${title}</h2>
+        <div class="recipe-meta">
+            <span class="meta-item">
+                <i class="fas fa-tag"></i> ${category.categoryTitle}
+            </span>
+            <span class="meta-item">
+                <i class="fas fa-user"></i> ${createdByUser.username}
+            </span>
+        </div>
+        <div class="recipe-section">
+            <h3 class="section-title">
+                <i class="fas fa-carrot"></i> Ingredients
+            </h3>
+            <ul class="ingredients-list">
+                ${ingredients.map(ing => `
+                    <li class="ingredient-item">
+                        <i class="fas fa-check-circle"></i> ${ing.name}
+                    </li>
+                `).join("")}
+            </ul>
+        </div>
+        <div class="recipe-section">
+            <h3 class="section-title">
+                <i class="fas fa-tags"></i> Tags
+            </h3>
+            <div class="tags-container">
+                ${recipeTags.map(tag => `
+                    <span class="tag-pill">${tag.name}</span>
+                `).join("")}
             </div>
-      `;
+        </div>
+    </div>
+</div>
+            `;
 
             recipes_container.appendChild(recipe_card);
         });
     } catch (err) {
-        recipes_container.innerHTML =
-            "<h1 class='errormsg'> recipes not found </h1>";
+        console.error("Error fetching recipes:", err);
+        recipes_container.innerHTML = "<h1 class='errormsg'>Recipes not found</h1>";
     }
 };
 
-window.addEventListener('load', () => {
+window.addEventListener('load', async () => {
     const params = new URLSearchParams(window.location.search);
-    const param = params.get('filter');
-    fetchApi(param);
+    const param = params.get('search');
+    await fetchApi(param);
 });
+
+function setPaperOrientation(img) {
+    const card = img.closest('.recipe-card');
+    const isVertical = img.naturalHeight > img.naturalWidth;
+    card.classList.add(isVertical ? 'vertical-paper' : 'horizontal-paper');
+    card.style.setProperty('--image-height', `${img.naturalHeight}px`);
+    card.style.setProperty('--image-width', `${img.naturalWidth}px`);
+}

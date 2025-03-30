@@ -1,8 +1,6 @@
 import {Controller, Get, Post, Render, Req, Res, Session, UseGuards} from '@nestjs/common';
 import {Response} from 'express';
-import {join} from "path";
-import {Auth0Guard} from "./auth/auth0.guard";
-import * as Console from "node:console";
+
 
 @Controller()
 export class AppController {
@@ -15,12 +13,6 @@ export class AppController {
             isAuthenticated,
             user,
         });
-    }
-
-    @Get('login')
-    login(@Res() res: Response, @Session() session: any) {
-        session.user = {id: 1, username: 'example'};
-        return res.redirect('/');
     }
 
     @Get('logout')
@@ -39,7 +31,7 @@ export class AppController {
         const isAuthenticated = !!session.user;
         const user = session.user || {};
 
-        return res.render('add-recipe.hbs', {
+        return res.render('create-recipe.hbs', {
             isAuthenticated,
             user,
         });
@@ -155,6 +147,20 @@ export class AppController {
             isAuthenticated,
             user,
         });
+    }
+
+    @Get('login')
+    getLoginPage(@Res() res: Response, @Session() session: any) {
+        const isAuthenticated = !!session.user;
+        const user = session.user || {};
+
+        return res.render('login.hbs');
+    }
+
+    @Get('sign-in')
+    getSignInPage(@Res() res: Response) {
+
+        return res.render('sign-in.hbs');
     }
 }
 

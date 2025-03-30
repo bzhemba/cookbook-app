@@ -202,6 +202,57 @@ footer {
   color: black;
 }
 
+.toast {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 15px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 300px;
+  transform: translateX(0);
+  transition: all 0.3s ease;
+  z-index: 1000;
+}
+
+.toast.fade-out {
+  transform: translateX(100%);
+  opacity: 0;
+}
+
+.toast-icon {
+  font-size: 1.5em;
+}
+
+.toast-content {
+  flex: 1;
+}
+
+.toast-close {
+  background: none;
+  border: none;
+  font-size: 1.2em;
+  cursor: pointer;
+  padding: 0 0 0 10px;
+  color: #666;
+}
+
+.toast.note_created {
+  border-left: 4px solid #4CAF50;
+}
+
+.toast.note_updated {
+  border-left: 4px solid #2196F3;
+}
+
+.toast.note_deleted {
+  border-left: 4px solid #F44336;
+}
+
 @media(max-width: 768px) {
   .app {
     width: 95%;
