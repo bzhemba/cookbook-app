@@ -9,6 +9,8 @@ import {RecipeTag} from "./entities/recipe-tag.entity";
 import {Ingredient} from "../ingredients/entities/ingredient.entity";
 import {Category} from "../category/entities/category.entity";
 import {UpdateRecipeDto} from "./dto/update-recipe-dto";
+import {PaginationDto} from "../shared/dtos/pagination.dto";
+import {PaginatedResultDto} from "../shared/dtos/paginated-result.dto";
 
 @Injectable()
 export class RecipesService {
@@ -59,8 +61,33 @@ export class RecipesService {
     return recipes.map(recipe => recipe.title);
   }
 
-  async getAll() {
-    return await this.recipeRepository.find({relations: { createdByUser: true, recipeTags: true, ingredients: true, category: true, imageData: true} });
+  async getAll(paginationDto: PaginationDto): Promise<PaginatedResultDto<Recipe>> {
+    const { page, limit } = paginationDto;
+    const [recipes, total] = await this.recipeRepository.findAndCount({
+      relations: { createdByUser: true, recipeTags: true, ingredients: true, category: true, imageData: true},
+      skip: (page - 1) * limit,
+      take: limit,
+    });
+
+    const lastPage = Math.ceil(total / limit);
+    const nextPage = page < lastPage ? page + 1 : null;
+    const prevPage = page > 1 ? page - 1 : null;
+
+    return {
+      data: recipes,
+      meta: {
+        total,
+        page,
+        limit,
+        lastPage,
+      },
+      links: {
+        first: `/recipes?page=1&limit=${limit}`,
+        previous: prevPage ? `/recipes?page=${prevPage}&limit=${limit}` : undefined,
+        next: nextPage ? `/recipes?page=${nextPage}&limit=${limit}` : undefined,
+        last: `/recipes?page=${lastPage}&limit=${limit}`,
+      },
+    };
   }
 
   async create(createRecipeDto: CreateRecipeDto) {
@@ -94,11 +121,11 @@ export class RecipesService {
     recipe.imageData = recipeImage;
 
     for (const id of createRecipeDto.ingredientIds) {
-      const ingredientt = await this.ingredientRepository.findOneBy({id: id} )
-      if (!ingredientt) {
+      const ingredient = await this.ingredientRepository.findOneBy({id: id} )
+      if (!ingredient) {
         throw new NotFoundException(`Tag with id '${id}' does not exist`);
       }
-      recipe.ingredients.push(ingredientt);
+      recipe.ingredients.push(ingredient);
     }
 
     for (const tagId of createRecipeDto.recipeTagIds) {

@@ -19,7 +19,7 @@ export class NotesService {
     async createNote(noteDto: CreateNoteDto): Promise<Note> {
         const user = await this.userRepository.findOneBy({ username: noteDto.createdByUser });
         if (!user) {
-            throw new Error('User not found');
+            throw new NotFoundException(`user with username '${noteDto.createdByUser}' does not exist`);
         }
 
         const note = new Note();

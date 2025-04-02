@@ -6,6 +6,8 @@ import { IngredientDto } from './dto/ingredient.dto';
 import { Image } from '../shared/entities/image.entity';
 import { Recipe } from '../recipes/entities/recipe.entity';
 import {CreateIngredientDto} from "./dto/create-ingredient.dto";
+import {PaginationDto} from "../shared/dtos/pagination.dto";
+import {PaginatedResultDto} from "../shared/dtos/paginated-result.dto";
 
 @Injectable()
 export class IngredientsService {
@@ -29,8 +31,32 @@ export class IngredientsService {
         return this.ingredientRepository.save(ingredient);
     }
 
-    async findAll(): Promise<Ingredient[]> {
-        return this.ingredientRepository.find({ relations: ['recipes'] });
+    async getAll(paginationDto: PaginationDto): Promise<PaginatedResultDto<Ingredient>> {
+        const { page, limit } = paginationDto;
+        const [ingredients, total] = await this.ingredientRepository.findAndCount({
+            skip: (page - 1) * limit,
+            take: limit,
+        });
+
+        const lastPage = Math.ceil(total / limit);
+        const nextPage = page < lastPage ? page + 1 : null;
+        const prevPage = page > 1 ? page - 1 : null;
+
+        return {
+            data: ingredients,
+            meta: {
+                total,
+                page,
+                limit,
+                lastPage,
+            },
+            links: {
+                first: `/ingredients?page=1&limit=${limit}`,
+                previous: prevPage ? `/ingredients?page=${prevPage}&limit=${limit}` : undefined,
+                next: nextPage ? `/ingredients?page=${nextPage}&limit=${limit}` : undefined,
+                last: `/ingredients?page=${lastPage}&limit=${limit}`,
+            },
+        };
     }
 
     async findOne(id: number): Promise<Ingredient> {

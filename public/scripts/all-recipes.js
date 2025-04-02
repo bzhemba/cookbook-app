@@ -1,30 +1,25 @@
 const recipes_container = document.querySelector(".recipes_container");
 const fetchApi = async (query) => {
     recipes_container.innerHTML = `
-<div class="preloader">
-    <img src="../images/loading.gif" class="loader_img" alt="Loading..." />
-</div>
-`
-    try {
-        await fakeDelay(2000);
+        <div class="preloader">
+            <img src="../images/loading.gif" class="loader_img" alt="Loading..." />
+        </div>
+    `;
 
+    try {
         const token = localStorage.getItem('auth_token');
         if (!token) {
             console.error('No token found, please log in');
             return;
         }
 
-        const url = query ? `/recipes/${encodeURIComponent(query)}` : "/recipes";
-        const response = await fetch(url, {
-            method: "GET",
-            headers: {
-                "Authorization": `Bearer ${token}`,
-            },
-        });
+        if (query){
+            await fetchSpecific(query, token);
+            return;
+        }
 
-        if (!response.ok) throw new Error("Failed to load recipes");
-        const data = await response.json();
-        await showData(data);
+        await fetchAll(token)
+
     } catch (er) {
         recipes_container.innerHTML =
             "<h1 class='errormsg'>Something went wrong. Please try again.</h1>";
@@ -34,6 +29,46 @@ const fetchApi = async (query) => {
 
 function fakeDelay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function fetchSpecific(query, token) {
+    const url = `/recipes/${encodeURIComponent(query)}`;
+    const response = await fetch(url, {
+        method: "GET",
+        headers: {
+            "Authorization": `Bearer ${token}`,
+        },
+    });
+
+    const data = await response.json();
+    await showData(data);
+}
+
+async function fetchAll(token){
+    let allRecipes = [];
+    let nextUrl = "/recipes";
+    let totalRecipes = 0;
+    let loadedRecipes = 0;
+
+    while (nextUrl) {
+        const response = await fetch(nextUrl, {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+            },
+        });
+
+        if (!response.ok) throw new Error("Failed to load recipes");
+
+        const { data, meta, links } = await response.json();
+
+        allRecipes = [...allRecipes, ...data];
+        nextUrl = links.next;
+        totalRecipes = meta.total;
+        loadedRecipes += data.length;
+    }
+
+    await showData(allRecipes);
 }
 
 const showData = async (resp) => {

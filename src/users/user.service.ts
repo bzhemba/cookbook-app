@@ -31,7 +31,7 @@ export class UserService {
     return user;
   }
 
-  async findAll() {
+  async getAll() {
     return await this.userRepository.find();
   }
 
