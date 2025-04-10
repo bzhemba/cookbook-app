@@ -15,10 +15,6 @@ export class Ingredient {
     @Column()
     name: string;
 
-    @AutoMap()
-    @JoinColumn()
-    imageData?: Image | null;
-
     @ManyToMany(() => Recipe, recipe => recipe.ingredients)
     @JoinTable()
     recipes: Recipe[];

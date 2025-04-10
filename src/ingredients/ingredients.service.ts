@@ -21,12 +21,9 @@ export class IngredientsService {
     ) {}
 
 
-    async create(ingredientDto: CreateIngredientDto): Promise<Ingredient> {
-        const image = await this.imageRepository.findOneBy({ id: ingredientDto.imageId });
-
+    async create(ingredientDto: CreateIngredientDto) {
         const ingredient = new Ingredient();
         ingredient.name = ingredientDto.name;
-        ingredient.imageData = image ? image : undefined;
 
         return this.ingredientRepository.save(ingredient);
     }
@@ -59,10 +56,10 @@ export class IngredientsService {
         };
     }
 
-    async findOne(id: number): Promise<Ingredient> {
+    async findOne(id: number) {
         const ingredient = await this.ingredientRepository.findOne({
             where: { id },
-            relations: ['imageData', 'recipes'],
+            relations: { recipes: true },
         });
         if (!ingredient) {
             throw new NotFoundException(`Ingredient with id '${id}' not found`);
@@ -70,15 +67,10 @@ export class IngredientsService {
         return ingredient;
     }
 
-    async update(id: number, ingredientDto: IngredientDto): Promise<Ingredient> {
+    async update(id: number, ingredientDto: IngredientDto) {
         const ingredient = await this.ingredientRepository.findOneBy({ id });
         if (!ingredient) {
             throw new NotFoundException(`Ingredient with id '${id}' not found`);
-        }
-
-        const image = await this.imageRepository.findOneBy({ id: ingredientDto.imageData?.id });
-        if (!image) {
-            throw new NotFoundException(`Image with id '${ingredientDto.imageData?.id}' not found`);
         }
 
         const recipes = await Promise.all(
@@ -92,13 +84,12 @@ export class IngredientsService {
         );
 
         ingredient.name = ingredientDto.name;
-        ingredient.imageData = image;
         ingredient.recipes = recipes;
 
         return this.ingredientRepository.save(ingredient);
     }
 
-    async remove(id: number): Promise<void> {
+    async remove(id: number){
         const ingredient = await this.ingredientRepository.findOneBy({ id });
         if (!ingredient) {
             throw new NotFoundException(`Ingredient with id '${id}' not found`);

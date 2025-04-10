@@ -10,12 +10,10 @@ export class CategoryService {
     constructor(
         @InjectRepository(Category)
         private readonly categoryRepository: Repository<Category>,
-        @InjectRepository(Recipe)
-        private readonly recipeRepository: Repository<Recipe>,
     ) {}
 
 
-    async create(categoryDto: CategoryDto): Promise<Category> {
+    async create(categoryDto: CategoryDto){
 
         const category = new Category();
         category.categoryTitle = categoryDto.categoryTitle;
@@ -27,7 +25,7 @@ export class CategoryService {
         return this.categoryRepository.find();
     }
 
-    async findOne(id: number): Promise<Category> {
+    async findOne(id: number){
         const category = await this.categoryRepository.findOne({
             where: { id },
             relations: ['recipes'],
@@ -38,7 +36,7 @@ export class CategoryService {
         return category;
     }
 
-    async update(id: number, categoryDto: CategoryDto): Promise<Category> {
+    async update(id: number, categoryDto: CategoryDto){
         const category = await this.categoryRepository.findOneBy({ id });
         if (!category) {
             throw new NotFoundException(`Category with id '${id}' not found`);
@@ -49,7 +47,7 @@ export class CategoryService {
         return this.categoryRepository.save(category);
     }
 
-    async remove(id: number): Promise<void> {
+    async remove(id: number){
         const category = await this.categoryRepository.findOneBy({ id });
         if (!category) {
             throw new NotFoundException(`Category with id '${id}' not found`);
