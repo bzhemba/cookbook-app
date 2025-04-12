@@ -20,7 +20,7 @@ export class Recipe {
 
     @AutoMap()
     @Column()
-    title: string;
+    name: string;
 
     @AutoMap()
     @Column()

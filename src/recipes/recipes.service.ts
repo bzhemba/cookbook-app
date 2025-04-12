@@ -32,7 +32,7 @@ export class RecipesService {
   async getByText(text: string) {
     const recipes = await this.recipeRepository.find({
       where: {
-        title: Like(`%${text}%`),
+        name: Like(`%${text}%`),
       },
       relations: {
         createdByUser: true,
@@ -53,12 +53,12 @@ export class RecipesService {
   async getSuggestions(text: string) {
     const recipes = await this.recipeRepository.find({
       where: {
-        title: Like(`%${text}%`),
+        name: Like(`%${text}%`),
       },
-      select: ['title'],
+      select: ['name'],
       take: 5,
     });
-    return recipes.map(recipe => recipe.title);
+    return recipes.map(recipe => recipe.name);
   }
 
   async getAll(paginationDto: PaginationDto): Promise<PaginatedResultDto<Recipe>> {
@@ -108,7 +108,7 @@ export class RecipesService {
 
     const recipe = new Recipe();
     recipe.createdByUser = user;
-    recipe.title = createRecipeDto.name;
+    recipe.name = createRecipeDto.name;
     recipe.description = createRecipeDto.description;
     recipe.ingredients = [];
     recipe.instructions = createRecipeDto.instructions;
@@ -156,7 +156,7 @@ export class RecipesService {
     }
 
     if (updateRecipeDto.title !== undefined) {
-      recipe.title = updateRecipeDto.title;
+      recipe.name = updateRecipeDto.title;
     }
     if (updateRecipeDto.description !== undefined) {
       recipe.description = updateRecipeDto.description;
