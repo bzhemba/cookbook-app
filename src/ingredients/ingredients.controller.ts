@@ -6,22 +6,37 @@ import {
     Param,
     Patch,
     Delete,
-    NotFoundException, UseGuards,
+    UseGuards,
+    UseFilters, Query,
 } from '@nestjs/common';
 import { IngredientsService } from './ingredients.service';
 import { IngredientDto } from './dto/ingredient.dto';
 import {JwtAuthGuard} from "../auth/jwt-auth.guard";
-import {ApiBearerAuth} from "@nestjs/swagger";
+import {
+    ApiBadRequestResponse,
+    ApiBearerAuth,
+    ApiNotFoundResponse,
+    ApiOkResponse, ApiQuery,
+    ApiUnauthorizedResponse
+} from "@nestjs/swagger";
 import {CreateIngredientDto} from "./dto/create-ingredient.dto";
 import {EventEmitter2} from "@nestjs/event-emitter";
+import {HttpExceptionFilter} from "../shared/ExceptionFilter";
+import {PaginatedResultDto} from "../shared/dtos/paginated-result.dto";
+import {PaginationDto} from "../shared/dtos/pagination.dto";
 
 @Controller('ingredients')
 @UseGuards(JwtAuthGuard)
+@UseFilters(new HttpExceptionFilter())
 export class IngredientsController {
     constructor(private readonly ingredientsService: IngredientsService, private eventEmitter: EventEmitter2) {}
 
     @Post()
     @ApiBearerAuth()
+    @ApiOkResponse({type: IngredientDto })
+    @ApiBadRequestResponse()
+    @ApiUnauthorizedResponse()
+    @ApiNotFoundResponse()
     async create(@Body() ingredientDto: CreateIngredientDto) {
         const ingredient = await this.ingredientsService.create(ingredientDto);
         this.eventEmitter.emit('ingredients', {
@@ -34,24 +49,39 @@ export class IngredientsController {
 
     @Get()
     @ApiBearerAuth()
-    async findAll() {
-        return this.ingredientsService.findAll();
+    @ApiOkResponse({ type: PaginatedResultDto<IngredientDto> })
+    @ApiBadRequestResponse()
+    @ApiQuery({ name: 'page', required: false, type: Number })
+    @ApiQuery({ name: 'limit', required: false, type: Number })
+    async getAll(@Query() paginationDto: PaginationDto) {
+        return this.ingredientsService.getAll(paginationDto);
     }
 
     @Get(':id')
     @ApiBearerAuth()
+    @ApiOkResponse({type: IngredientDto })
+    @ApiBadRequestResponse()
+    @ApiUnauthorizedResponse()
+    @ApiNotFoundResponse()
     async findOne(@Param('id') id: number) {
         return this.ingredientsService.findOne(id);
     }
 
     @Patch(':id')
     @ApiBearerAuth()
+    @ApiOkResponse({type: IngredientDto })
+    @ApiBadRequestResponse()
+    @ApiUnauthorizedResponse()
+    @ApiNotFoundResponse()
     async update(@Param('id') id: number, @Body() ingredientDto: IngredientDto) {
         return this.ingredientsService.update(id, ingredientDto);
     }
 
     @Delete(':id')
     @ApiBearerAuth()
+    @ApiBadRequestResponse()
+    @ApiUnauthorizedResponse()
+    @ApiNotFoundResponse()
     async remove(@Param('id') id: number) {
         return this.ingredientsService.remove(id);
     }

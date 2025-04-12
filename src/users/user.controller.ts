@@ -5,18 +5,20 @@ import {
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
-  ApiTags
+  ApiTags, ApiUnauthorizedResponse
 } from "@nestjs/swagger";
-import {Body, Controller, Delete, Get, Param, Patch, Post, Req, UseGuards} from "@nestjs/common";
+import {Body, Controller, Delete, Get, Param, Patch, Post, Req, UseFilters, UseGuards} from "@nestjs/common";
 import { UserService } from "./user.service";
 import { AutoMapper } from "nestjsx-automapper";
 import { User } from "./entities/user.entity";
 import { UserDto } from "./dto/user.dto";
 import {CreateUserDto} from "./dto/create-user.dto";
 import {JwtAuthGuard} from "../auth/jwt-auth.guard";
+import {HttpExceptionFilter} from "../shared/ExceptionFilter";
 
 @ApiTags('user')
 @Controller('users')
+@UseFilters(new HttpExceptionFilter())
 @UseGuards(JwtAuthGuard)
 export class UserController {
   constructor(
@@ -26,38 +28,47 @@ export class UserController {
   }
   @ApiOperation({summary: 'Get user by id'})
 
-  @ApiNotFoundResponse()
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
+  @ApiNotFoundResponse()
   @ApiOkResponse({ type: UserDto })
+  @ApiBadRequestResponse()
+  @ApiUnauthorizedResponse()
   @Post()
   async createUser(@Body() body: CreateUserDto) {
     await this.userService.createUser(body);
   }
 
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @ApiOperation({summary: 'Get user by id'})
   @ApiNotFoundResponse()
-  @ApiBearerAuth()
   @ApiOkResponse({ type: UserDto })
+  @ApiBadRequestResponse()
+  @ApiUnauthorizedResponse()
   @Get(':id')
   async getById(@Param('id') id: number) {
     const user = await this.userService.getById(id);
     return this.mapper.map(user, UserDto);
   }
 
-  @ApiOperation({summary: 'Get all users'})
-  @ApiForbiddenResponse()
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @ApiOkResponse({ type: UserDto, isArray: true })
+  @ApiOperation({summary: 'Get all users'})
+  @ApiNotFoundResponse()
+  @ApiOkResponse({ type: UserDto })
+  @ApiBadRequestResponse()
+  @ApiUnauthorizedResponse()
   @Get()
-  async findAll() {
-    const users = await this.userService.findAll();
+  async getAll() {
+    const users = await this.userService.getAll();
     return this.mapper.mapArray(users, UserDto);
   }
 
   @ApiOperation({summary: 'Delete user by id'})
   @ApiBadRequestResponse()
+  @ApiUnauthorizedResponse()
   @ApiNotFoundResponse()
-  @ApiBearerAuth()
   @Delete(':id')
   async delete(@Param('id') id: number) {
     await this.userService.delete(id);

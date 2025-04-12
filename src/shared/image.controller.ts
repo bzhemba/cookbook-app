@@ -14,26 +14,38 @@ import { ImageService } from './image.service';
 import { diskStorage } from 'multer';
 import {FileInterceptor} from "@nestjs/platform-express";
 import { Request } from 'express';
-import {ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation} from "@nestjs/swagger";
+import {
+    ApiBadRequestResponse,
+    ApiBearerAuth,
+    ApiBody,
+    ApiConsumes,
+    ApiNotFoundResponse,
+    ApiOkResponse,
+    ApiOperation
+} from "@nestjs/swagger";
 import {JwtAuthGuard} from "../auth/jwt-auth.guard";
+import {NoteDto} from "../notes/dto/note.dto";
 
 @UseGuards(JwtAuthGuard)
 @Controller('images')
 export class ImageController {
     constructor(private readonly imageService: ImageService) {}
 
-    @Delete(':id')
-    @ApiBearerAuth()
     @UseGuards(JwtAuthGuard)
+    @Delete(':id')
+    @ApiBadRequestResponse()
+    @ApiNotFoundResponse()
+    @ApiBearerAuth()
     async deleteImage(@Param('id') id: number) {
         return this.imageService.deleteImage(id);
     }
 
+    @UseGuards(JwtAuthGuard)
     @Post('upload')
+    @ApiBearerAuth()
     @ApiOperation({ summary: 'Upload an image' })
     @ApiConsumes('multipart/form-data')
-    @ApiBearerAuth()
-    @UseGuards(JwtAuthGuard)
+    @ApiBadRequestResponse()
     @ApiBody({
         schema: {
             type: 'object',

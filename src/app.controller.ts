@@ -1,7 +1,8 @@
 import {Controller, Get, Post, Render, Req, Res, Session, UseGuards} from '@nestjs/common';
 import {Response} from 'express';
+import {ApiExcludeController} from "@nestjs/swagger";
 
-
+@ApiExcludeController()
 @Controller()
 export class AppController {
     @Get()

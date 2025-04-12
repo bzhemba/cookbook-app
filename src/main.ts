@@ -38,7 +38,8 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
 
   app.useGlobalPipes(new ValidationPipe({
-    transform: true
+    transform: true,
+    forbidNonWhitelisted: true,
   }));
 
   SwaggerModule.setup('swagger/api', app, document);
