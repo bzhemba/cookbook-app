@@ -2,14 +2,14 @@ import { Field, ID, ObjectType, HideField } from '@nestjs/graphql';
 import { ApiProperty, ApiHideProperty } from '@nestjs/swagger';
 import {AutoMap} from "nestjsx-automapper";
 
-@ObjectType('User') // GraphQL тип
+@ObjectType('User')
 export class UserDto {
-    @Field(() => ID, {description: 'Unique identifier' }) // GraphQL поле (ID тип)
-    @AutoMap()       // AutoMapper
-    @ApiProperty({ example: 1, description: 'Unique identifier' }) // Swagger
+    @Field(() => ID, {description: 'Unique identifier' })
+    @AutoMap()
+    @ApiProperty({ example: 1, description: 'Unique identifier' })
     id: number;
 
-    @Field(() => String, {description: 'Username' }) // GraphQL поле
+    @Field(() => String, {description: 'Username' })
     @AutoMap()
     @ApiProperty({ example: 'john_doe', description: 'Username' })
     username: string;
@@ -19,12 +19,12 @@ export class UserDto {
     @ApiProperty({ example: 'john@example.com', description: 'Email address' })
     email: string;
 
-    @HideField() // Скрыть в GraphQL схеме
+    @HideField()
     @AutoMap()
-    @ApiHideProperty() // Скрыть в Swagger
+    @ApiHideProperty()
     password: string;
 
-    @Field(() => String, { nullable: true }) // Поле может быть null
+    @Field(() => String, { nullable: true })
     @AutoMap()
     @ApiProperty({
         example: 'https://example.com/avatar.jpg',

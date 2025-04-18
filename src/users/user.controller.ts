@@ -49,7 +49,7 @@ export class UserController {
     @ApiOkResponse({ type: UserDto, isArray: true })
     @Get()
     async findAll() {
-        const users = await this.userService.findAll();
+        const users = await this.userService.getAll();
         return this.mapper.mapArray(users, UserDto);
     }
 

@@ -21,7 +21,7 @@ export class IngredientsService {
     ) {}
 
 
-    async create(ingredientDto: CreateIngredientDto) {
+    async create(ingredientDto: CreateIngredientDto): Promise<Ingredient> {
         const ingredient = new Ingredient();
         ingredient.name = ingredientDto.name;
 
@@ -56,10 +56,10 @@ export class IngredientsService {
         };
     }
 
-    async findOne(id: number) {
+    async findOne(id: number): Promise<Ingredient> {
         const ingredient = await this.ingredientRepository.findOne({
             where: { id },
-            relations: { recipes: true },
+            relations: ['imageData', 'recipes'],
         });
         if (!ingredient) {
             throw new NotFoundException(`Ingredient with id '${id}' not found`);
@@ -67,7 +67,7 @@ export class IngredientsService {
         return ingredient;
     }
 
-    async update(id: number, ingredientDto: IngredientDto) {
+    async update(id: number, ingredientDto: IngredientDto): Promise<Ingredient> {
         const ingredient = await this.ingredientRepository.findOneBy({ id });
         if (!ingredient) {
             throw new NotFoundException(`Ingredient with id '${id}' not found`);
@@ -89,7 +89,7 @@ export class IngredientsService {
         return this.ingredientRepository.save(ingredient);
     }
 
-    async remove(id: number){
+    async remove(id: number): Promise<void> {
         const ingredient = await this.ingredientRepository.findOneBy({ id });
         if (!ingredient) {
             throw new NotFoundException(`Ingredient with id '${id}' not found`);

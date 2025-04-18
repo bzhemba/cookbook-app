@@ -6,7 +6,6 @@
     {{> header}}
     {{> scripts}}
     <title>Create Recipe</title>
-    <link rel="stylesheet" href="/public/base-style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Freehand&display=swap" rel="stylesheet">
@@ -16,74 +15,159 @@
     <link rel="stylesheet" href="/public/create-recipe-style.css" type="text/css"/>
     <link href="/public/MultiSelect.css" rel="stylesheet" type="text/css">
 </head>
-<body>
 <div class="container">
-    <h1>Create Recipe</h1>
-    <form id="recipeForm">
-        <div class="form-group">
-            <label for="name">Recipe Name</label>
-            <input type="text" id="name" name="name" required maxlength="50">
+        <div class="action-item description">
+            <img src="/public/images/description-icon.png" alt="Edit Details" class="action-icon" id="detailsBtn">
+            <img src="/public/images/description-title.png" alt="Recipe Details" class="action-title">
+        </div>
+        <div class="action-item fridge">
+            <img src="/public/images/fridge.png" alt="Add Ingredients" class="action-icon" id="ingredientsBtn">
+            <img src="/public/images/select-title.png" alt="Ingredients" class="action-title">
+        </div>
+        <div class="action-item image">
+            <img src="/public/images/image-icon.png" alt="Upload Image" class="action-icon" id="imageBtn">
+            <img src="/public/images/upload-title.png" alt="Upload" class="action-title">
         </div>
 
-        <div class="form-group">
-            <label for="description">Description</label>
-            <textarea id="description" name="description" required maxlength="100"></textarea>
+        <div class="action-item create-button" id="createRecipeButton">
+            <img src="/public/images/create-button.png" alt="Create recipe" class="action-icon">
+            <img src="/public/images/sparkle.png" alt="" class="sparkle-effect">
         </div>
 
-        <div class="form-group">
-            <label for="ingredients">Ingredients</label>
+    <input type="hidden" id="name" name="name">
+    <input type="hidden" id="description" name="description">
+    <input type="hidden" id="instructions" name="instructions">
+    <input type="hidden" id="image" name="image">
+    <input type="hidden" id="prepTime" name="prepTime">
+    <input type="hidden" id="cookTime" name="cookTime">
+    <input type="hidden" id="servings" name="servings">
+    <input type="hidden" id="tags" name="tags">
+    <input type="hidden" id="categories" name="categories">
+
+
+    <div id="combinedModal" class="modal">
+        <div class="large-modal-content">
+            <div class="modal-content">
+                <button class="close-button">
+                    <img src="/public/images/close-button.png" alt="Close">
+                </button>
+                <h2>Add Recipe Instructions and Details</h2>
+
+                <form id="combinedForm">
+                    <div class="form-group">
+                        <label for="modalInstructions">Instructions</label>
+                        <textarea id="modalInstructions" name="modalInstructions" required maxlength="400"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="modalName">Recipe Name</label>
+                        <input type="text" id="modalName" name="modalName" required maxlength="50">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="modalDescription">Description</label>
+                        <textarea id="modalDescription" name="modalDescription" required maxlength="100"></textarea>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="modalPrepTime">Preparation Time (minutes)</label>
+                            <input type="number" id="modalPrepTime" name="modalPrepTime" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="modalCookTime">Cooking Time (minutes)</label>
+                            <input type="number" id="modalCookTime" name="modalCookTime" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="modalServings">Servings</label>
+                            <input type="number" id="modalServings" name="modalServings" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="modalTags">Tags</label>
+                        <div id="modalTagsList">
+                            <select id="modalDynamicTags" name="modalDynamicTags" multiple></select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="modalCategories">Categories</label>
+                        <div id="modalCategoriesList">
+                            <select id="modalDynamicCategories" name="modalDynamicCategories" multiple></select>
+                        </div>
+                    </div>
+
+                    <div class="form-button-container">
+                        <button type="submit" class="image-button">
+                            <img src="/public/images/done-button.png" alt="Save All">
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+<div id="ingredientsModal" class="modal">
+    <div class="small-modal-content">
+        <div class="modal-content">
+            <button class="close-button">
+                <img src="/public/images/close-button.png" alt="Close">
+            </button>
+        <h2>Add Ingredients</h2>
             <div id="ingredientsList">
                 <select id="dynamic" name="dynamic"></select>
+                <button type="button" id="createIngredient" class="create-ingredient-button">
+                    <img src="/public/images/create-ingredient-button.png" alt="Create New Ingredient">
+                </button>
             </div>
-            <button type="button" id="createIngredient">Create New Ingredient</button>
-        </div>
-
-        <div class="form-group">
-            <label for="instructions">Instructions</label>
-            <textarea id="instructions" name="instructions" required maxlength="400"></textarea>
-        </div>
-
-        <div class="form-group">
-            <label for="prepTime">Preparation Time (minutes)</label>
-            <input type="number" id="prepTime" name="prepTime" required>
-        </div>
-
-        <div class="form-group">
-            <label for="cookTime">Cooking Time (minutes)</label>
-            <input type="number" id="cookTime" name="cookTime" required>
-        </div>
-
-        <div class="form-group">
-            <label for="servings">Servings</label>
-            <input type="number" id="servings" name="servings" required>
-        </div>
-
-        <div class="form-group">
-            <label for="tags">Tags</label>
-            <div id="tagsList">
-                <select id="dynamic-tags" name="dynamic-tags"></select>
+            <div class="form-button-container">
+                <button type="submit" class="image-button">
+                    <img src="/public/images/done-button.png" alt="Save All">
+                </button>
             </div>
-        </div>
-
-        <div class="form-group">
-            <label for="categories">Categories</label>
-            <div id="categoriesList">
-                <select id="dynamic-categories" name="dynamic-categories"></select>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label for="image">Upload Image</label>
-            <input type="file" id="image" name="image" accept="image/*">
-        </div>
-
-        <button type="submit">Create Recipe</button>
-    </form>
+    </div>
+    </div>
 </div>
+
+    <div id="imageModal" class="modal">
+        <div class="small-modal-content">
+            <div class="modal-content">
+                <button class="close-button">
+                    <img src="/public/images/close-button.png" alt="Close">
+                </button>
+                <h2>Upload Recipe Image</h2>
+                <form id="imageForm">
+                    <div class="form-group">
+                        <label for="modalImage">Select Image</label>
+                        <input type="file" id="modalImage" name="modalImage" accept="image/*" style="display: none;">
+                        <label for="modalImage" class="upload-label">
+                            <div class="image-frame-container">
+                                <img src="/public/images/cam-image.png" alt="Default image" class="default-image" id="defaultImage">
+                                <div class="image-frame-overlay">
+                                    <img src="/public/images/image-frame.png" alt="Frame" class="image-frame">
+                                </div>
+                            </div>
+                        </label>
+                    </div>
+                    <div class="form-button-container">
+                        <button type="submit" class="image-button">
+                            <img src="/public/images/done-button.png" alt="Save All">
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
 
 <div id="ingredientModal" class="modal">
     <div class="modal-content">
-        <span class="close">&times;</span>
+        <button class="close-button">
+            <img src="/public/images/close-button.png" alt="Close">
+        </button>
         <h2>Create New Ingredient</h2>
         <form id="ingredientForm">
             <div class="form-group">
@@ -94,10 +178,12 @@
                 <label for="ingredientImage">Ingredient Image</label>
                 <input type="file" id="ingredientImage" name="ingredientImage" accept="image/*">
             </div>
-            <button type="submit">Create Ingredient</button>
+            <button type="submit" class="image-button">
+                <img src="/public/images/done-button.png" alt="Save All">
+            </button>
         </form>
     </div>
 </div>
 <script src="/public/scripts/MultiSelect.js"></script>
-</body>
+</div>
 </html>

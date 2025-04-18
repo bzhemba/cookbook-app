@@ -8,6 +8,7 @@ import {ImageDto} from "../../shared/dtos/image.dto";
 import {Recipe} from "../../recipes/entities/recipe.entity";
 import {RecipeDto} from "../../recipes/dto/recipe.dto";
 import {Image} from "../../shared/entities/image.entity";
+import {PaginationDto} from "../../shared/dtos/pagination.dto";
 
 @Resolver('Ingredient')
 export class IngredientResolver {
@@ -29,9 +30,9 @@ export class IngredientResolver {
     }
 
     @Query(() => [IngredientDto], { name: 'ingredients' })
-    async getIngredients(): Promise<IngredientDto[]> {
-        const ingredients = await this.ingredientService.findAll();
-        return this.mapper.mapArray(ingredients, IngredientDto);
+    async getIngredients(@Args('input') input: PaginationDto): Promise<IngredientDto[]> {
+        const ingredients = await this.ingredientService.getAll(input);
+        return this.mapper.mapArray(ingredients.data, IngredientDto);
     }
 
     @Mutation(() => IngredientDto)

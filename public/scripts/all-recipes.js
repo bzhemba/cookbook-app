@@ -27,10 +27,6 @@ const fetchApi = async (query) => {
     }
 };
 
-function fakeDelay(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
-
 async function fetchSpecific(query, token) {
     const url = `/recipes/${encodeURIComponent(query)}`;
     const response = await fetch(url, {
@@ -97,6 +93,7 @@ const showData = async (resp) => {
 
 
             recipe_card.innerHTML = `
+<div class="recipe-container">
     <div class="recipe-card" id="recipe-card-${id}">
         <div class="recipe-image-wrapper">
             <img 
@@ -108,12 +105,11 @@ const showData = async (resp) => {
             />
             <div class="title-overlay"></div>
         </div>
-        <div class="recipe-tabs">
+    </div>
+            <div class="recipe-tabs">
             <div class="recipe-tab ingredients" onclick="showIngredientsModal('${id}')">
-                <span>Ingredients</span>
             </div>
             <div class="recipe-tab instructions" onclick="showInstructionsModal('${id}')">
-                <span>Instructions</span>
             </div>
         </div>
     </div>
@@ -184,7 +180,6 @@ function setPaperOrientation(img, name) {
     card.classList.add(isVertical ? 'vertical-paper' : 'horizontal-paper');
     card.style.setProperty('--image-height', `${img.naturalHeight}px`);
     card.style.setProperty('--image-width', `${img.naturalWidth}px`);
-
 
     const titleOverlay = card.querySelector('.title-overlay');
     titleOverlay.setAttribute('data-title', name);

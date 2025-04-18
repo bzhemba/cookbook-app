@@ -4,7 +4,7 @@ import {AutoMap} from "nestjsx-automapper";
 
 @InputType()
 export class CreateUserDto {
-    @Field(() => String) // GraphQL поле
+    @Field(() => String)
     @AutoMap()
     @ApiProperty({
         example: 'john_doe',
@@ -27,7 +27,7 @@ export class CreateUserDto {
     @AutoMap()
     @ApiProperty({
         example: 'P@ssw0rd!',
-        description: 'Password (min 8 characters)',
+        description: 'Password',
         minLength: 8
     })
     password: string;

@@ -9,7 +9,7 @@ export class RecipeTagResolver {
 
     @Query(() => [RecipeTagDto], {
         description: 'Get all recipe tags',
-        nullable: 'items' // Makes each item in array nullable if needed
+        nullable: 'items'
     })
     async recipeTags(): Promise<RecipeTagDto[]> {
         return this.recipeTagService.getAll();

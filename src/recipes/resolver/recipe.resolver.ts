@@ -6,6 +6,7 @@ import {RecipesService} from "../recipes.service";
 import {JwtAuthGuard} from "../../auth/jwt-auth.guard";
 import {CreateRecipeDto} from "../dto/create-recipe-dto";
 import {UpdateRecipeDto} from "../dto/update-recipe-dto";
+import {PaginationDto} from "../../shared/dtos/pagination.dto";
 
 @Resolver(() => RecipeDto)
 export class RecipeResolver {
@@ -20,8 +21,8 @@ export class RecipeResolver {
     }
 
     @Query(() => [RecipeDto], { name: 'recipes' })
-    async getAllRecipes() {
-        return this.recipeService.getAll();
+    async getAllRecipes(@Args('input') input: PaginationDto) {
+        return this.recipeService.getAll(input);
     }
 
     @Query(() => [String], { name: 'recipeSuggestions' })

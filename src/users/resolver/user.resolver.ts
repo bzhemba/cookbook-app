@@ -28,7 +28,7 @@ export class UserResolver {
 
     @Query(() => [UserDto], { description: 'Get all users' })
     async getAllUsers(): Promise<UserDto[]> {
-        const users = await this.userService.findAll();
+        const users = await this.userService.getAll();
         return this.mapper.mapArray(users, UserDto);
     }
 
