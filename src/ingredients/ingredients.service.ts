@@ -22,11 +22,8 @@ export class IngredientsService {
 
 
     async create(ingredientDto: CreateIngredientDto): Promise<Ingredient> {
-        const image = await this.imageRepository.findOneBy({ id: ingredientDto.imageId });
-
         const ingredient = new Ingredient();
         ingredient.name = ingredientDto.name;
-        ingredient.imageData = image ? image : undefined;
 
         return this.ingredientRepository.save(ingredient);
     }
@@ -76,11 +73,6 @@ export class IngredientsService {
             throw new NotFoundException(`Ingredient with id '${id}' not found`);
         }
 
-        const image = await this.imageRepository.findOneBy({ id: ingredientDto.imageData?.id });
-        if (!image) {
-            throw new NotFoundException(`Image with id '${ingredientDto.imageData?.id}' not found`);
-        }
-
         const recipes = await Promise.all(
             ingredientDto.recipes.map(async (recipeDto) => {
                 const recipe = await this.recipeRepository.findOneBy({ id: recipeDto.id });
@@ -92,7 +84,6 @@ export class IngredientsService {
         );
 
         ingredient.name = ingredientDto.name;
-        ingredient.imageData = image;
         ingredient.recipes = recipes;
 
         return this.ingredientRepository.save(ingredient);

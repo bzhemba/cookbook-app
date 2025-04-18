@@ -5,6 +5,7 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import {DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { join } from 'path';
 import {ValidationPipe} from "@nestjs/common";
+import graphqlUploadExpress from "graphql-upload";
 
 
 async function bootstrap() {
@@ -26,6 +27,7 @@ async function bootstrap() {
   app.useStaticAssets(join(__dirname, '..', 'uploads'), {
     prefix: '/uploads',
   });
+
 
   const configService = app.get(ConfigService);
 

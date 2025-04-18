@@ -1,26 +1,92 @@
+@import url('https://fonts.googleapis.com/css2?family=Freehand&family=Zeyada&display=swap');
+
+h1 {
+    font-size: 60px;
+    padding: 10px;
+    margin-left: 5px;
+    font-family: "Freehand", cursive;
+    font-weight: 400;
+    font-style: normal;
+    color: #34252F;
+}
+nav{
+    top: 250px;
+}
+nav > ul {
+    display: flex;
+    justify-content: space-evenly;
+    gap: 20px;
+    list-style-type: none;
+    padding: 10px;
+}
+
+nav > li {
+    margin: 0 10px;
+}
+
+a {
+    color: #808080;
+    text-decoration: none;
+    font-family: "Zeyada", cursive;
+    font-size: 25px;
+}
+
+nav > ul > li:hover a {
+    color: #A57548;
+    font-family: "Zeyada", cursive;
+    font-size: 27px;
+}
+.activeLink {
+    color: black;
+}
+
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
+    background-color: #FCFDAF;
+    background-size: contain;
+    display: flex;
+    flex-direction: column;
     margin: 0;
-    padding: 0;
 }
 
 .container {
-    max-width: 600px;
-    margin: 50px auto;
-    padding: 20px;
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-image: url("./images/vertical-paper.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    width: 900px;
+    height: 800px;
+    margin: 0 auto;
+    box-sizing: border-box;
 }
 
-h1 {
-    text-align: center;
-    color: #333;
+.login-container {
+    display: grid;
+    grid-template-columns: 1fr auto;
+}
+
+.login-container a {
+    margin: 15px;
+    text-decoration: none;
+    color: black;
+}
+
+.login-container nav a {
+    color: #808080;
+    text-decoration: none;
+    font-family: "Zeyada", cursive;
+    font-size: 25px;
+}
+
+.login-container .activeLink {
+    color: black;
+}
+
+.login-container p {
+    margin: 0;
 }
 
 .form-group {
-    margin-bottom: 15px;
+    padding: 10px;
 }
 
 label {
@@ -39,18 +105,7 @@ select {
     border-radius: 4px;
 }
 
-button {
-    padding: 10px 15px;
-    background-color: #28a745;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
 
-button:hover {
-    background-color: #218838;
-}
 .toast {
     position: fixed;
     bottom: 20px;
@@ -96,22 +151,258 @@ button:hover {
 .modal {
     display: none;
     position: fixed;
-    z-index: 1;
-    left: 0;
     top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
-    overflow: auto;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0,0,0,0.5);
+    z-index: 1000;
+    overflow-y: auto;
+}
+
+.small-modal-content {
+    background-image: url("./images/modal-small.png");
+    background-size: 600px 400px;
+    background-repeat: no-repeat;
+    background-position: center;
+    margin: 20px auto;
+    padding: 20px;
+    width: 600px;
+    height: 400px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.large-modal-content {
+    background-image: url("./images/modal-large.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100% 100%;
+    width: 800px;
+    height: 800px;
+    margin: 20px auto;
+    position: relative;
+    padding: 0;
 }
 
 .modal-content {
-    background-color: #fff;
-    margin: 15% auto;
+    width: 60%;
     padding: 20px;
-    border-radius: 8px;
-    width: 300px;
-    text-align: center;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.form-button-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.image-button {
+    border: none;
+    background: none;
+    padding: 0;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.image-button:hover {
+    transform: scale(1.05);
+}
+
+.image-button img {
+    width: 150px;
+    height: 80px;
+    object-fit: contain;
+}
+
+.create-ingredient-button img{
+    width: 100px;
+    height: 80px;
+    object-fit: contain;
+}
+
+.create-ingredient-button {
+    border: none;
+    background: none;
+    padding: 0;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.create-ingredient-button:hover {
+    transform: scale(1.05);
+}
+
+
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
+    gap: 15px;
+}
+
+.form-group textarea {
+    min-height: 30px;
+    resize: vertical;
+}
+
+.close-button {
+    position: absolute;
+    top: 5%;
+    right: 5%;
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: none;
+    padding: 0;
+    cursor: pointer;
+    z-index: 10;
+}
+
+.close-button img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transition: transform 0.2s ease;
+}
+
+.close-button:hover img {
+    transform: scale(1.1);
+}
+
+.form-actions {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+    padding: 20px 0;
+    margin-bottom: 30px;
+}
+
+.action-item {
+    position: absolute;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    flex: 1;
+    max-width: 180px;
+    max-height: 180px;
+}
+
+.create-button{
+    top: 75%;
+    left: 25%;
+}
+
+.sparkle-effect {
+    position: absolute;
+    top: -25%;
+    left: -20%;
+    width: 160%;
+    height: 160%;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.create-button:hover {
+    transform: scale(1.05);
+}
+
+.create-button:hover .sparkle-effect {
+    opacity: 1;
+    animation: sparkle 1.5s infinite;
+}
+
+@keyframes sparkle {
+    0% { transform: scale(1); opacity: 0.8; }
+    50% { transform: scale(1.1); opacity: 1; }
+    100% { transform: scale(1); opacity: 0.8; rotation: 90deg}
+}
+
+.description {
+    position: relative;
+    top: 20%;
+    left: 51%;
+}
+
+.description .action-title {
+    position: absolute;
+    transform: translate(-110%, 10%);
+}
+
+.fridge {
+    position: relative;
+    left: 25%;
+}
+
+.fridge .action-icon {
+    display: block;
+}
+
+.fridge .action-title {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: translate(-80%, -50%);
+}
+
+.image {
+    position: relative;
+    top: 10%;
+    left: 60%;
+}
+
+.image .action-title {
+    position: absolute;
+    transform: translate(30%, -180%);
+}
+
+.action-item:hover {
+    transform: translateY(-5px);
+}
+
+.action-icon {
+    display: block;
+    object-fit: contain;
+    width: 200px;
+    height: 200px;
+}
+
+.action-title {
+    width: 250px;
+    height: 250px;
+    object-fit: contain;
+}
+
+.modal-btn {
+    padding: 10px 15px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.modal-btn:hover {
+    background-color: #45a049;
+}
+
+.image-preview {
+    margin-top: 15px;
+    max-height: 200px;
+    overflow: hidden;
+}
+
+.image-preview img {
+    max-width: 100%;
+    max-height: 200px;
+    display: block;
 }
 
 .close {
@@ -124,5 +415,49 @@ button:hover {
 
 .close:hover {
     color: #000;
+}
+.form-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.image-frame-container {
+    display: flex;
+    justify-content: center;
+    width: 300px;
+    height: 150px;
+}
+
+
+.image-frame {
+    display: block;
+    width: 400px;
+    height: 170px;
+}
+
+.default-image {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 130px;
+    height: auto;
+    z-index: 1;
+}
+
+.image-frame-overlay {
+    position: relative;
+    z-index: 0;
+}
+
+@media (max-width: 768px) {
+    .form-actions {
+        flex-direction: column;
+        gap: 30px;
+    }
+
+    .action-item {
+        max-width: 100%;
+    }
 }
 

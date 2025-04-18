@@ -20,6 +20,8 @@ import {CategoryModule} from "./category/category.module";
 import {AuthModule} from "./auth/auth.module";
 import {ImageModule} from "./shared/image.module";
 import {NotificationModule} from "./notifications/notification.module";
+import {GraphQLModule} from "@nestjs/graphql";
+import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 
 @Module({
     imports: [TypeOrmModule.forRootAsync({
@@ -40,6 +42,15 @@ import {NotificationModule} from "./notifications/notification.module";
             synchronize: false,
         }),
     }),
+        GraphQLModule.forRootAsync<ApolloDriverConfig>({
+            imports: [ConfigModule],
+            driver: ApolloDriver,
+            useFactory: async () => ({
+                playground: true,
+                uploads: false,
+                autoSchemaFile: true,
+            }),
+        }),
         ConfigModule.forRoot({
             isGlobal: true,
         }),
@@ -62,4 +73,9 @@ import {NotificationModule} from "./notifications/notification.module";
 })
 
 export class AppModule {}
+
+function calculateQueryComplexity(document: any): number {
+    // Реализация подсчета сложности
+    return 0;
+}
 

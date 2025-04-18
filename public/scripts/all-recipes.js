@@ -27,10 +27,6 @@ const fetchApi = async (query) => {
     }
 };
 
-function fakeDelay(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
-
 async function fetchSpecific(query, token) {
     const url = `/recipes/${encodeURIComponent(query)}`;
     const response = await fetch(url, {
@@ -80,10 +76,11 @@ const showData = async (resp) => {
         result.map((value) => {
             const {
                 id,
-                title,
+                name,
                 category,
                 imageData,
                 ingredients,
+                instructions,
                 recipeTags,
                 createdByUser
             } = value;
@@ -96,49 +93,50 @@ const showData = async (resp) => {
 
 
             recipe_card.innerHTML = `
+<div class="recipe-container">
     <div class="recipe-card" id="recipe-card-${id}">
         <div class="recipe-image-wrapper">
             <img 
                 src="${imageUrl}" 
-                alt="${title}" 
+                alt="${name}" 
                 class="recipe-image"
                 onerror="this.src='placeholder.jpg'"
-                onload="setPaperOrientation(this)"
+                onload="setPaperOrientation(this, '${name}')"
             />
+            <div class="title-overlay"></div>
         </div>
-    <div class="recipe-content">
-        <h2 class="recipe-title">${title}</h2>
-        <div class="recipe-meta">
-            <span class="meta-item">
-                <i class="fas fa-tag"></i> ${category.categoryTitle}
-            </span>
-            <span class="meta-item">
-                <i class="fas fa-user"></i> ${createdByUser.username}
-            </span>
-        </div>
-        <div class="recipe-section">
-            <h3 class="section-title">
-                <i class="fas fa-carrot"></i> Ingredients
-            </h3>
-            <ul class="ingredients-list">
-                ${ingredients.map(ing => `
-                    <li class="ingredient-item">
-                        <i class="fas fa-check-circle"></i> ${ing.name}
-                    </li>
-                `).join("")}
-            </ul>
-        </div>
-        <div class="recipe-section">
-            <h3 class="section-title">
-                <i class="fas fa-tags"></i> Tags
-            </h3>
-            <div class="tags-container">
-                ${recipeTags.map(tag => `
-                    <span class="tag-pill">${tag.name}</span>
-                `).join("")}
+    </div>
+            <div class="recipe-tabs">
+            <div class="recipe-tab ingredients" onclick="showIngredientsModal('${id}')">
+            </div>
+            <div class="recipe-tab instructions" onclick="showInstructionsModal('${id}')">
             </div>
         </div>
     </div>
+    
+    <div id="ingredients-modal-${id}" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('ingredients-modal-${id}')">&times;</span>
+        <h2>${name} - Ingredients</h2>
+        <ul class="ingredients-list">
+            ${ingredients.map(ing => `
+                <li class="ingredient-item">
+                    <i class="fas fa-check-circle"></i> ${ing.name}
+                </li>
+            `).join("")}
+        </ul>
+    </div>
+</div>
+
+<div id="instructions-modal-${id}" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('instructions-modal-${id}')">&times;</span>
+        <h2>${name} - Instructions</h2>
+        <div class="instructions-content">
+            <p>${instructions}</p>
+        </div>
+    </div>
+</div>
 </div>
             `;
 
@@ -155,11 +153,34 @@ window.addEventListener('load', async () => {
     const param = params.get('search');
     await fetchApi(param);
 });
+function showIngredientsModal(id) {
+    document.getElementById(`ingredients-modal-${id}`).style.display = "block";
+}
 
-function setPaperOrientation(img) {
+function showInstructionsModal(id) {
+    document.getElementById(`instructions-modal-${id}`).style.display = "block";
+}
+
+function closeModal(modalId) {
+    document.getElementById(modalId).style.display = "none";
+}
+
+window.onclick = function(event) {
+    document.querySelectorAll('.modal').forEach(modal => {
+        if (event.target === modal) {
+            modal.style.display = "none";
+        }
+    });
+}
+
+function setPaperOrientation(img, name) {
     const card = img.closest('.recipe-card');
     const isVertical = img.naturalHeight > img.naturalWidth;
+
     card.classList.add(isVertical ? 'vertical-paper' : 'horizontal-paper');
     card.style.setProperty('--image-height', `${img.naturalHeight}px`);
     card.style.setProperty('--image-width', `${img.naturalWidth}px`);
+
+    const titleOverlay = card.querySelector('.title-overlay');
+    titleOverlay.setAttribute('data-title', name);
 }

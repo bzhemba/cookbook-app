@@ -3,8 +3,8 @@ document.addEventListener("DOMContentLoaded", async function () {
 
 const createIngredientButton = document.getElementById("createIngredient");
 const ingredientModal = document.getElementById("ingredientModal");
-const closeModal = document.querySelector(".close");
-const recipeForm = document.getElementById("recipeForm");
+const createButton = document.getElementById('createRecipeButton');
+const closeModal = document.querySelector(".close-button");
 const imageInput = document.getElementById("image");
 const ingredientForm = document.getElementById("ingredientForm");
 const ingredientImageInput = document.getElementById("ingredientImage");
@@ -22,9 +22,7 @@ closeModal.addEventListener("click", () => {
     ingredientModal.style.display = "none";
 });
 
-ingredientForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
-
+createButton.addEventListener('click', async function() {
     const ingredientName = document.getElementById("ingredientName").value;
     const ingredientImageFile = ingredientImageInput.files[0];
     const token = localStorage.getItem('auth_token');
@@ -49,6 +47,75 @@ ingredientForm.addEventListener("submit", async (e) => {
         alert("Failed to create ingredient");
     }
 });
+
+    document.getElementById('ingredientsBtn').onclick = function() {
+        document.getElementById('ingredientsModal').style.display = 'block';
+    }
+
+    document.getElementById('imageBtn').onclick = function() {
+        document.getElementById('imageModal').style.display = 'block';
+    }
+    document.getElementById('detailsBtn').onclick = function() {
+        document.getElementById('combinedModal').style.display = 'block';
+    }
+
+// Обработчики для закрытия модальных окон
+    document.querySelectorAll('.close').forEach(function(closeBtn) {
+        closeBtn.onclick = function() {
+            this.closest('.modal').style.display = 'none';
+        }
+    });
+
+// Обработчики для закрытия модальных окон
+    document.querySelectorAll('.close-button').forEach(function(closeBtn) {
+        closeBtn.onclick = function() {
+            this.closest('.modal').style.display = 'none';
+        }
+    });
+
+// Закрытие при клике вне модального окна
+    window.onclick = function(event) {
+        if (event.target.className === 'modal') {
+            event.target.style.display = 'none';
+        }
+    }
+
+    document.getElementById('modalImage').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+
+            reader.onload = function(event) {
+                let previewImg = document.getElementById('previewImage');
+                if (!previewImg) {
+                    previewImg = document.createElement('img');
+                    previewImg.id = 'previewImage';
+                    previewImg.className = 'preview-image';
+                    document.querySelector('.image-frame-container').appendChild(previewImg);
+                }
+
+                previewImg.src = event.target.result;
+                previewImg.style.display = 'block';
+                document.getElementById('defaultImage').style.display = 'none';
+            }
+
+            reader.readAsDataURL(file);
+        }
+    });
+
+    document.querySelector('.close-button').addEventListener('click', function() {
+        const previewImg = document.getElementById('previewImage');
+        if (previewImg) {
+            previewImg.style.display = 'none';
+            previewImg.src = '';
+        }
+        document.getElementById('defaultImage').style.display = 'block';
+        document.getElementById('modalImage').value = '';
+    });
+
+    document.getElementById('createIngredient').onclick = function() {
+        document.getElementById('ingredientModal').style.display = 'block';
+    }
 
 async function uploadImage(file, token) {
     const formData = new FormData();
@@ -101,13 +168,13 @@ imageInput.addEventListener("change", async (e) => {
     imageId = await uploadImage(file, token);
 });
 
-recipeForm.addEventListener("submit", async (e) => {
+window.addEventListener("submit", async (e) => {
     e.preventDefault();
     const token = localStorage.getItem('auth_token');
-    await createRecipe(recipeForm, token);
+    await createRecipe(token);
 });
 
-async function createRecipe(recipeForm, token) {
+async function createRecipe(token) {
     const formData = new FormData(recipeForm);
     const user = localStorage.getItem('username');
     const recipe = {
@@ -134,7 +201,6 @@ async function createRecipe(recipeForm, token) {
     });
 
     if (!response.ok) throw new Error("Failed to create recipe");
-    recipeForm.reset()
     ingredientSelect.reset()
     categorySelect.reset()
     tagsSelect.reset()
@@ -207,7 +273,7 @@ function showToast(eventData) {
             });
             if (!response.ok) return new Error("Failed to load ingredients");
             const data = await response.json();
-            populateIngredients(data);
+            populateIngredients(data.data);
         } catch (error) {
             console.error("Error loading ingredients:", error);
         }
@@ -269,23 +335,22 @@ function showToast(eventData) {
             }
             options.push(option);
         });
-        ingredientSelect = new MultiSelect('#dynamic',
-            {
-                data: options,
-                placeholder: 'Select an option',
-                search: true,
-                selectAll: true,
-                listAll: false,
-                onChange: function (id, name, element) {
-                    console.log('Change:', id, name, element);
-                },
-                onSelect: function (id, name, element) {
-                    console.log('Selected:', id, name, element);
-                },
-                onUnselect: function (id, name, element) {
-                    console.log('Unselected:', id, name, element);
-                }
-            })
+        window.ingredientSelect = new MultiSelect('#dynamic', {
+            data: options,
+            placeholder: 'Select ingredients',
+            search: true,
+            selectAll: true,
+            listAll: false,
+            onChange: function(id, name, element) {
+                console.log('Change:', id, name, element);
+            },
+            onSelect: function(id, name, element) {
+                console.log('Selected:', id, name, element);
+            },
+            onUnselect: function(id, name, element) {
+                console.log('Unselected:', id, name, element);
+            }
+        });
     }
 
     function populateTags(tags) {
@@ -298,7 +363,7 @@ function showToast(eventData) {
             }
             options.push(option);
         });
-        tagsSelect = new MultiSelect('#dynamic-tags',
+        tagsSelect = new MultiSelect('#modalDynamicTags',
             {
                 data: options,
                 placeholder: 'Select an option',
@@ -328,7 +393,7 @@ function showToast(eventData) {
             options.push(option);
         });
 
-        categorySelect = new MultiSelect('#dynamic-categories',
+        categorySelect = new MultiSelect('#modalDynamicCategories',
             {
                 data: options,
                 placeholder: 'Select an option',

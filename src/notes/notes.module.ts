@@ -6,11 +6,12 @@ import {NotesController} from "./notes.controller";
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import {NotesService} from "./notes.service";
 import {Note} from "./entities/note.entity";
+import {NoteResolver} from "./resolver/note.resolver";
 
 @Module({
     imports: [TypeOrmModule.forFeature([User, Note])],
     controllers: [NotesController],
-    providers: [NotesService, AutoMapper]
+    providers: [NotesService, AutoMapper, NoteResolver]
 })
 
 export class NotesModule {}

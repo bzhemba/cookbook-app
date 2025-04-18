@@ -11,11 +11,13 @@ import {Category} from "../category/entities/category.entity";
 import {Ingredient} from "../ingredients/entities/ingredient.entity";
 import {RecipeTagService} from "./recipe-tags.service";
 import {RecipeTagController} from "./recipe-tags.controller";
+import {RecipeResolver} from "./resolver/recipe.resolver";
+import {RecipeTagResolver} from "./resolver/recipe-tag.resolver";
 
 @Module({
   imports: [TypeOrmModule.forFeature([Recipe, User, Image, RecipeTag, Category, Ingredient])],
   controllers: [RecipesController, RecipeTagController],
-  providers: [RecipesService, RecipeTagService, AutoMapper]
+  providers: [RecipesService, RecipeTagService, AutoMapper, RecipeResolver, RecipeTagResolver]
 })
 
 export class RecipesModule {}

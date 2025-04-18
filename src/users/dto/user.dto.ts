@@ -1,24 +1,35 @@
+import { Field, ID, ObjectType, HideField } from '@nestjs/graphql';
+import { ApiProperty, ApiHideProperty } from '@nestjs/swagger';
 import {AutoMap} from "nestjsx-automapper";
-import {ApiProperty} from "@nestjs/swagger";
 
+@ObjectType('User')
 export class UserDto {
+    @Field(() => ID, {description: 'Unique identifier' })
     @AutoMap()
-    @ApiProperty()
+    @ApiProperty({ example: 1, description: 'Unique identifier' })
     id: number;
 
+    @Field(() => String, {description: 'Username' })
     @AutoMap()
-    @ApiProperty()
+    @ApiProperty({ example: 'john_doe', description: 'Username' })
     username: string;
 
+    @Field(() => String, {description: 'Email address' })
     @AutoMap()
-    @ApiProperty()
+    @ApiProperty({ example: 'john@example.com', description: 'Email address' })
     email: string;
 
+    @HideField()
     @AutoMap()
-    @ApiProperty()
-    password: string
+    @ApiHideProperty()
+    password: string;
 
+    @Field(() => String, { nullable: true })
     @AutoMap()
-    @ApiProperty()
+    @ApiProperty({
+        example: 'https://example.com/avatar.jpg',
+        description: 'User avatar URL',
+        required: false
+    })
     imageData?: string;
 }

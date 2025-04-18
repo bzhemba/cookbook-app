@@ -1,16 +1,34 @@
+import { Field, InputType } from '@nestjs/graphql';
+import { ApiProperty } from '@nestjs/swagger';
 import {AutoMap} from "nestjsx-automapper";
-import {ApiProperty} from "@nestjs/swagger";
 
+@InputType()
 export class CreateUserDto {
+    @Field(() => String)
     @AutoMap()
-    @ApiProperty()
+    @ApiProperty({
+        example: 'john_doe',
+        description: 'Username (3-20 characters)',
+        minLength: 3,
+        maxLength: 20
+    })
     username: string;
 
+    @Field(() => String)
     @AutoMap()
-    @ApiProperty()
+    @ApiProperty({
+        example: 'user@example.com',
+        description: 'Valid email address',
+        format: 'email'
+    })
     email: string;
 
+    @Field(() => String)
     @AutoMap()
-    @ApiProperty()
-    password: string
+    @ApiProperty({
+        example: 'P@ssw0rd!',
+        description: 'Password',
+        minLength: 8
+    })
+    password: string;
 }

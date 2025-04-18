@@ -67,28 +67,18 @@ nav > ul > li:hover a {
     font-size:3rem;
 }
 
-.recipe-card {
-    position: relative;
-    margin: 15rem auto;
-    background-size: 100% 100%;
-    background-repeat: no-repeat;
-    background-position: center;
-    z-index: 1;
-    display: flex;
-    overflow: hidden;
-}
-
 .recipe-card.horizontal-paper {
     background-image: url('/public/images/horizontal-paper.png');
     flex-direction: column;
     width: 500px;
-    min-height: 400px;
+    min-height: 600px;
     padding: 40px 50px;
 }
 
 .recipe-card.horizontal-paper .recipe-image-wrapper {
     text-align: center;
     margin-bottom: 30px;
+    overflow: visible;
 }
 
 .recipe-card.horizontal-paper .recipe-image {
@@ -110,6 +100,7 @@ nav > ul > li:hover a {
     align-items: center;
     justify-content: center;
     padding-right: 30px;
+    overflow: visible;
 }
 
 .recipe-card.vertical-paper .recipe-content {
@@ -122,6 +113,130 @@ nav > ul > li:hover a {
     max-width: 100%;
 }
 
+.recipe-container {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    margin-bottom: 100px;
+}
+
+.recipe-card {
+    position: relative;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    z-index: 1;
+    display: flex;
+
+    overflow: visible;
+}
+
+.recipe-tabs {
+    display: flex;
+    flex-direction: column;
+    z-index: 1000;
+    margin-left: -13px;
+}
+
+.recipe-tab {
+    width: 60px;
+    height: 80px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center left;
+    cursor: pointer;
+    margin-bottom: 5px;
+    border-radius: 5px 0 0 5px;
+    transition: transform 0.3s ease;
+    overflow: hidden;
+    position: relative;
+    transform-origin: left;
+}
+
+.recipe-tab:hover {
+    transform: scale(1.5);
+}
+
+.recipe-tab.ingredients {
+    background-image: url('./images/label-ingredients.png');
+}
+
+.recipe-tab.instructions {
+    background-image: url('./images/label-instructions.png');
+}
+
+.title-overlay {
+    position: absolute;
+    background-size: contain;
+    background-repeat: no-repeat;
+    z-index: 5;
+    pointer-events: none;
+}
+.title-overlay::before {
+    content: attr(data-title);
+    position: absolute;
+    top: 50%;
+    left: 126px;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 16px;
+    text-align: center;
+    z-index: 1;
+}
+
+.vertical-paper .title-overlay {
+    background-image: url('./images/title-vertical.png');
+    width: 100%;
+    height: 30%;
+    top: 80px;
+    left: 460px;
+}
+
+.horizontal-paper .title-overlay {
+    background-image: url('./images/title-horizontal.png');
+    width: 50%;
+    height: 90%;
+    top: 47%;
+    left: 32%;
+    transform: rotate(18deg);
+    transform-origin: center;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 100;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 10% auto;
+    padding: 20px;
+    border-radius: 8px;
+    width: 60%;
+    max-width: 700px;
+    max-height: 70vh;
+    overflow-y: auto;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover {
+    color: black;
+}
+
 .recipe-image {
     border-radius: 5px;
     object-fit: contain;
@@ -132,7 +247,9 @@ nav > ul > li:hover a {
     z-index: 2;
     color: #3a3a3a;
 }
-
+.recipe_card{
+    align-items: center;
+}
 .recipe-card::before {
     content: "";
     position: absolute;

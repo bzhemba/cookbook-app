@@ -1,67 +1,94 @@
+import {ObjectType, Field, ID, Int} from '@nestjs/graphql';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsNotEmpty, IsOptional, IsArray, IsNumber, IsString } from 'class-validator';
+import { RecipeTagDto } from './recipe-tag.dto';
 import {AutoMap} from "nestjsx-automapper";
-import {ApiProperty} from "@nestjs/swagger";
 import {UserDto} from "../../users/dto/user.dto";
 import {CategoryDto} from "../../category/dto/category.dto";
-import {IngredientDto} from "../../ingredients/dto/ingredient.dto";
 import {ImageDto} from "../../shared/dtos/image.dto";
-import {RecipeTagDto} from "./recipe-tag.dto";
-import {Optional} from "@nestjs/common";
 
+@ObjectType({ description: 'Recipe model' })
 export class RecipeDto {
+    @Field(() => ID, { description: 'Unique identifier' })
+    @ApiProperty({ example: 1 })
     @AutoMap()
-    @ApiProperty()
     id: number;
 
+    @Field({ description: 'Recipe title' })
+    @ApiProperty({ example: 'Pasta Carbonara' })
     @AutoMap()
-    @ApiProperty({type: () => UserDto})
+    @IsNotEmpty()
+    @IsString()
+    name: string;
+
+    @Field({ description: 'Recipe description', nullable: true })
+    @ApiProperty({ required: false })
+    @AutoMap()
+    @IsOptional()
+    @IsString()
+    description?: string;
+
+    @Field(() => UserDto, { description: 'Recipe author' })
+    @ApiProperty({ type: () => UserDto })
+    @AutoMap()
     createdByUser: UserDto;
 
+    @Field(() => CategoryDto, { description: 'Recipe category' })
+    @ApiProperty({ type: () => CategoryDto })
     @AutoMap()
-    @ApiProperty()
-    title: string;
+    category: CategoryDto;
 
+    @Field(() => [String], { description: 'List of ingredients' })
+    @ApiProperty({ type: [String], example: ['Tomato', 'Pasta'] })
     @AutoMap()
-    @ApiProperty()
-    description: string;
+    @IsArray()
+    ingredients: string[];
 
+    @Field({ description: 'Recipe instructions', nullable: true })
+    @ApiProperty({ required: false })
     @AutoMap()
-    @ApiProperty({type: [IngredientDto]})
-    ingredients: IngredientDto[];
+    @IsOptional()
+    @IsString()
+    instructions?: string;
 
+    @Field(() => Int, { description: 'Preparation time in minutes' })
+    @ApiProperty({ example: 30 })
     @AutoMap()
-    @ApiProperty()
-    instructions: string;
-
-    @AutoMap()
-    @ApiProperty()
+    @IsNumber()
     prepTime: number;
 
+    @Field(() => Int, { description: 'Cooking time in minutes' })
+    @ApiProperty({ example: 15 })
     @AutoMap()
-    @ApiProperty()
-    cookTime: number;
+    @IsNumber()
+    cookingTime: number;
 
+    @Field(() => Int, { description: 'Servings amount' })
+    @ApiProperty({ example: 4 })
     @AutoMap()
-    @ApiProperty()
+    @IsNumber()
     servings: number;
 
+    @Field(() => [RecipeTagDto], { description: 'List of tags' })
+    @ApiProperty({ type: () => RecipeTagDto, isArray: true })
     @AutoMap()
-    @ApiProperty({ type: [RecipeTagDto] })
+    @IsArray()
     recipeTags: RecipeTagDto[];
 
+    @Field(() => Date, { description: 'Creation date' })
+    @ApiProperty({ example: '2023-01-01T00:00:00Z' })
     @AutoMap()
-    @ApiProperty()
-    category: CategoryDto
-
-    @AutoMap()
-    @ApiProperty()
     createdAt: Date;
 
+    @Field(() => Date, { description: 'Date of updating', nullable: true })
+    @ApiProperty({ required: false })
     @AutoMap()
-    @ApiProperty()
-    @Optional()
+    @IsOptional()
     updatedAt?: Date;
 
+    @Field(() => ImageDto, { description: 'Recipe image', nullable: true })
+    @ApiProperty({ type: () => ImageDto, required: false })
     @AutoMap()
-    @ApiProperty()
-    imageData: ImageDto;
+    @IsOptional()
+    imageData?: ImageDto;
 }

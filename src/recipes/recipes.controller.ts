@@ -86,7 +86,7 @@ export class RecipesController {
   @ApiNotFoundResponse()
   @Patch(':id')
   async updateRecipe(@Param('id') id: number, @Body() updateProjectDto : UpdateRecipeDto, @Req() request: Request) {
-     await this.recipeService.update(request.oidc.user?.nickname, id, updateProjectDto);
+    await this.recipeService.update(request.oidc.user?.nickname, id, updateProjectDto);
   }
 
   @UseGuards(JwtAuthGuard)
