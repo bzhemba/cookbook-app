@@ -36,7 +36,7 @@ a {
 nav > ul > li:hover a {
   color: #A57548;
   font-family: "Zeyada", cursive;
-  font-size: 27px;
+  transform: scale(1.03);
 }
 .activeLink {
   color: black;

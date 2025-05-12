@@ -2,6 +2,7 @@ import {Field, ID, InputType, Int} from "@nestjs/graphql";
 import {ApiProperty} from "@nestjs/swagger";
 import {IsArray, IsNotEmpty, IsNumber, IsOptional, IsString, MaxLength} from "class-validator";
 import {AutoMap} from "nestjsx-automapper";
+import {CreateRecipeIngredientDto} from "../../ingredients/dto/create-recipe-ingredient";
 
 @InputType({ description: 'Input for creating a recipe' })
 export class CreateRecipeDto {
@@ -27,12 +28,11 @@ export class CreateRecipeDto {
     @IsNotEmpty()
     categoryId: number;
 
-    @Field(() => [String], { description: 'List of ingredients' })
-    @ApiProperty({ type: [String], example: ['Tomato', 'Pasta'] })
+    @ApiProperty({ description: 'List of ingredients' })
+    @IsArray()
+    @ApiProperty({ isArray: true, type: () => CreateRecipeIngredientDto })
     @AutoMap()
-    @ApiProperty({ isArray: true, type: () => Number })
-    @IsNotEmpty()
-    ingredientIds: number[];
+    ingredients: CreateRecipeIngredientDto[];
 
     @Field({ description: 'Recipe instructions', nullable: true })
     @ApiProperty({ required: false })

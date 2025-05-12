@@ -6,6 +6,7 @@ import {Category} from "../../category/entities/category.entity";
 import {JoinColumn} from "typeorm";
 import {Image} from "../../shared/entities/image.entity";
 import {RecipeTag} from "./recipe-tag.entity";
+import {RecipeIngredient} from "../../ingredients/entities/recipe-ingredient.entity";
 
 @Entity('recipe')
 export class Recipe {
@@ -27,9 +28,8 @@ export class Recipe {
     description: string;
 
     @AutoMap()
-    @ManyToMany(() => Ingredient, ingredient => ingredient.recipes)
-    @JoinTable()
-    ingredients: Ingredient[];
+    @OneToMany(() => RecipeIngredient, ri => ri.recipe)
+    ingredients: RecipeIngredient[];
 
     @AutoMap()
     @Column()
@@ -47,6 +47,7 @@ export class Recipe {
     @Column()
     servings: number;
 
+    @AutoMap()
     @ManyToMany(() => RecipeTag, tag => tag.recipes, { cascade: true })
     @JoinTable()
     recipeTags: RecipeTag[];
@@ -60,6 +61,7 @@ export class Recipe {
     @Column()
     createdAt: Date;
 
+    @AutoMap()
     @Column({ type: 'timestamp', nullable: true })
     updatedAt: Date | null;
 

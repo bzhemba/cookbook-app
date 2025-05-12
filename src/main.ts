@@ -5,7 +5,7 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import {DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { join } from 'path';
 import {ValidationPipe} from "@nestjs/common";
-import graphqlUploadExpress from "graphql-upload";
+import {json} from "express";
 
 
 async function bootstrap() {
@@ -48,7 +48,8 @@ async function bootstrap() {
 
   const port = configService.get<number>('PORT') || 3000;
 
+  app.use(json({ limit: '50mb' }));
   await app.listen(port);
-  console.log("Application is running on http://localhost:", port);
+  console.log(`Application is running on http://localhost:${port}`);
 }
 bootstrap();

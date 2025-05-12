@@ -1,35 +1,32 @@
 import {
+    BadRequestException,
     Body,
     Controller,
     Delete,
-    Get,
+    Get, Header, InternalServerErrorException, NotFoundException,
     Param,
     Post,
-    Req,
+    Req, Res,
     UploadedFile,
     UseGuards,
     UseInterceptors
 } from '@nestjs/common';
 import { ImageService } from './image.service';
-import { diskStorage } from 'multer';
+import { randomUUID } from 'crypto';
 import {FileInterceptor} from "@nestjs/platform-express";
-import { Request } from 'express';
 import {
     ApiBadRequestResponse,
     ApiBearerAuth,
     ApiBody,
     ApiConsumes,
     ApiNotFoundResponse,
-    ApiOkResponse,
-    ApiOperation
+    ApiOperation, ApiParam, ApiProduces
 } from "@nestjs/swagger";
 import {JwtAuthGuard} from "../auth/jwt-auth.guard";
-import {NoteDto} from "../notes/dto/note.dto";
-
-@UseGuards(JwtAuthGuard)
+import {StorageService} from "../storage/storage.service";
 @Controller('images')
 export class ImageController {
-    constructor(private readonly imageService: ImageService) {}
+    constructor(private readonly imageService: ImageService, private readonly storageService: StorageService) {}
 
     @UseGuards(JwtAuthGuard)
     @Delete(':id')
@@ -57,18 +54,35 @@ export class ImageController {
             },
         },
     })
-    @UseInterceptors(FileInterceptor('file', {
-        storage: diskStorage({
-            destination: './uploads',
-            filename: (req, file, callback) => {
-                return callback(null, `${file.originalname}`);
+    @UseInterceptors(
+        FileInterceptor('file', {
+            limits: {
+                fileSize: 15 * 1024 * 1024,
+            },
+            fileFilter: (req, file, cb) => {
+                const allowedMimeTypes = ['image/jpeg', 'image/png', 'image/webp'];
+                if (allowedMimeTypes.includes(file.mimetype)) {
+                    cb(null, true);
+                } else {
+                    cb(new BadRequestException('Invalid file type'), false);
+                }
             },
         }),
-    }))
+    )
     async uploadFile(@UploadedFile() file: Express.Multer.File) {
+        const fileExtension = file.originalname.split('.').pop();
+        const fileName = `${randomUUID()}.${fileExtension}`;
 
-        const imageUrl = `/uploads/${file.filename}`;
+        const uploadResult = await this.storageService.uploadFile(file, fileName);
 
+        const imageUrl = uploadResult.Key;
         return this.imageService.createImage(imageUrl);
+    }
+
+    @Get(':key')
+    @ApiBadRequestResponse()
+    @ApiNotFoundResponse()
+    async getImageUrl(@Param('key') key: string): Promise<string> {
+        return await this.storageService.getFileUrl(key);
     }
 }

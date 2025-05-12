@@ -1,4 +1,4 @@
-import {Body, Controller, Delete, Get, Param, Post, Put, UseFilters} from '@nestjs/common';
+import {Body, Controller, Delete, Get, Param, Post, Put, UseFilters, UseInterceptors} from '@nestjs/common';
 import { NotesService } from './notes.service';
 import {CreateNoteDto} from "./dto/crete-note.dto";
 import {UpdateNoteDto} from "./dto/update-note.dto";
@@ -7,9 +7,11 @@ import {ApiBadRequestResponse, ApiNotFoundResponse, ApiOkResponse, ApiUnauthoriz
 import {IngredientDto} from "../ingredients/dto/ingredient.dto";
 import {NoteDto} from "./dto/note.dto";
 import {HttpExceptionFilter} from "../shared/ExceptionFilter";
+import {TimingInterceptor} from "../interceptors/timing.interceptor";
 
 @Controller('notes')
 @UseFilters(new HttpExceptionFilter())
+@UseInterceptors(TimingInterceptor)
 export class NotesController {
     constructor(private readonly notesService: NotesService, private eventEmitter: EventEmitter2,) {}
 

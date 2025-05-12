@@ -13,11 +13,18 @@ import {RecipeTagService} from "./recipe-tags.service";
 import {RecipeTagController} from "./recipe-tags.controller";
 import {RecipeResolver} from "./resolver/recipe.resolver";
 import {RecipeTagResolver} from "./resolver/recipe-tag.resolver";
+import {CacheModule} from "@nestjs/cache-manager";
+import {MeasurementUnit} from "../dictionaries/measurement/measurement-unit.entity";
+import {MeasurementUnitService} from "../dictionaries/measurement/measurement-unit.service";
+import {RecipeIngredient} from "../ingredients/entities/recipe-ingredient.entity";
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Recipe, User, Image, RecipeTag, Category, Ingredient])],
+  imports: [CacheModule.register({
+    ttl: 60,
+    max: 100,
+  }), TypeOrmModule.forFeature([Recipe, User, Image, RecipeTag, Category, Ingredient, MeasurementUnit, RecipeIngredient])],
   controllers: [RecipesController, RecipeTagController],
-  providers: [RecipesService, RecipeTagService, AutoMapper, RecipeResolver, RecipeTagResolver]
+  providers: [RecipesService, MeasurementUnitService, RecipeTagService, AutoMapper, RecipeResolver, RecipeTagResolver]
 })
 
 export class RecipesModule {}

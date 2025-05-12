@@ -1,7 +1,4 @@
-window.addEventListener('load', () => {
-    let loadTime = performance.now();
-    const footer = document.getElementById('load-time');
-    if (footer) {
-        footer.innerHTML = 'Load time: ' + loadTime.toFixed(3) + ' ms';
-    }
+document.addEventListener('DOMContentLoaded', () => {
+    const clientLoadTime = performance.now();
+    document.getElementById('client-time').textContent = Math.round(clientLoadTime);
 });

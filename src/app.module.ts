@@ -22,6 +22,10 @@ import {ImageModule} from "./shared/image.module";
 import {NotificationModule} from "./notifications/notification.module";
 import {GraphQLModule} from "@nestjs/graphql";
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import {StorageModule} from "./storage/storage.module";
+import {DictionaryModule} from "./dictionaries/dictionary.module";
+import {MeasurementUnit} from "./dictionaries/measurement/measurement-unit.entity";
+import {RecipeIngredient} from "./ingredients/entities/recipe-ingredient.entity";
 
 @Module({
     imports: [TypeOrmModule.forRootAsync({
@@ -38,8 +42,8 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
                     "rejectUnauthorized": false
                 }
             },
-            entities: [User, Image, Category, Note, Recipe, Ingredient, RecipeTag],
-            synchronize: false,
+            entities: [User, Image, Category, Note, Recipe, Ingredient, RecipeTag, MeasurementUnit, RecipeIngredient],
+            synchronize: true,
         }),
     }),
         GraphQLModule.forRootAsync<ApolloDriverConfig>({
@@ -54,6 +58,7 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
         ConfigModule.forRoot({
             isGlobal: true,
         }),
+        StorageModule,
         ServeStaticModule.forRoot(
             {
                 rootPath: join(__dirname, '..', 'public'),
@@ -66,16 +71,12 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
         AuthModule,
         ImageModule,
         IngredientsModule,
-        NotificationModule
+        NotificationModule,
+        DictionaryModule
     ],
     controllers: [AppController],
     providers: [AppService],
 })
 
 export class AppModule {}
-
-function calculateQueryComplexity(document: any): number {
-    // Реализация подсчета сложности
-    return 0;
-}
 
