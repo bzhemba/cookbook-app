@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {{> header}}
+    <link rel="stylesheet" href="/public/recipe-details.css" type="text/css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/corejs-typeahead/1.2.1/bloodhound.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/corejs-typeahead/1.2.1/typeahead.jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <script defer src="/public/scripts/recipe-details.js" type="text/javascript" charset="utf-8"></script>
+</head>
+<body>
+<main>
+    <section>
+<div class="recipes_container">
+</div>
+    </section>
+</main>
+</body>
+<div class="preloader">
+    <img src="/public/images/loading.gif" class="loader_img" alt="Loading..." />
+</div>
+<div class="content-blocker" id="contentBlocker"></div>
+</html>

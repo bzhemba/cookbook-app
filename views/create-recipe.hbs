@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -16,23 +17,29 @@
     <link href="/public/MultiSelect.css" rel="stylesheet" type="text/css">
 </head>
 <div class="container">
-        <div class="action-item description">
+    <div class="action-item description">
+        <div class="icon-wrapper">
             <img src="/public/images/description-icon.png" alt="Edit Details" class="action-icon" id="detailsBtn">
-            <img src="/public/images/description-title.png" alt="Recipe Details" class="action-title">
         </div>
-        <div class="action-item fridge">
+        <img src="/public/images/description-title.png" alt="Recipe Details" class="action-title">
+    </div>
+    <div class="action-item fridge">
+        <div class="icon-wrapper">
             <img src="/public/images/fridge.png" alt="Add Ingredients" class="action-icon" id="ingredientsBtn">
-            <img src="/public/images/select-title.png" alt="Ingredients" class="action-title">
         </div>
-        <div class="action-item image">
+        <img src="/public/images/select-title.png" alt="Ingredients" class="action-title">
+    </div>
+    <div class="action-item image">
+        <div class="icon-wrapper">
             <img src="/public/images/image-icon.png" alt="Upload Image" class="action-icon" id="imageBtn">
-            <img src="/public/images/upload-title.png" alt="Upload" class="action-title">
         </div>
+        <img src="/public/images/upload-title.png" alt="Upload" class="action-title">
+    </div>
 
-        <div class="action-item create-button" id="createRecipeButton">
-            <img src="/public/images/create-button.png" alt="Create recipe" class="action-icon">
-            <img src="/public/images/sparkle.png" alt="" class="sparkle-effect">
-        </div>
+    <div class="action-item create-button" id="createRecipeButton">
+        <img src="/public/images/create-button.png" alt="Create recipe" class="action-icon">
+        <img src="/public/images/sparkle.png" alt="" class="sparkle-effect">
+    </div>
 
     <input type="hidden" id="name" name="name">
     <input type="hidden" id="description" name="description">
@@ -101,7 +108,7 @@
                     </div>
 
                     <div class="form-button-container">
-                        <button type="submit" class="image-button">
+                        <button type="button" id="pre-save" class="image-button">
                             <img src="/public/images/done-button.png" alt="Save All">
                         </button>
                     </div>
@@ -110,27 +117,30 @@
         </div>
     </div>
 
-<div id="ingredientsModal" class="modal">
-    <div class="small-modal-content">
-        <div class="modal-content">
-            <button class="close-button">
-                <img src="/public/images/close-button.png" alt="Close">
-            </button>
-        <h2>Add Ingredients</h2>
-            <div id="ingredientsList">
-                <select id="dynamic" name="dynamic"></select>
-                <button type="button" id="createIngredient" class="create-ingredient-button">
-                    <img src="/public/images/create-ingredient-button.png" alt="Create New Ingredient">
+    <div id="ingredientsModal" class="modal">
+        <div class="small-modal-content">
+            <div class="modal-content">
+                <button class="close-button">
+                    <img src="/public/images/close-button.png" alt="Close">
                 </button>
+                <h2>Add Ingredients</h2>
+                <div id="ingredientsList">
+                    <select id="dynamic" name="dynamic"></select>
+                    <button type="button" id="addIngredient" class="create-ingredient-button">
+                        <img src="/public/images/create-ingredient-button.png" alt="Create New Ingredient">
+                    </button>
+                </div>
+                <div id="selectedIngredientsContainer">
+                    <div id="selectedIngredientsList"></div>
+                </div>
+                <div class="form-button-container">
+                    <button type="button" id="pre-save" class="image-button">
+                        <img src="/public/images/done-button.png" alt="Save All">
+                    </button>
+                </div>
             </div>
-            <div class="form-button-container">
-                <button type="submit" class="image-button">
-                    <img src="/public/images/done-button.png" alt="Save All">
-                </button>
-            </div>
+        </div>
     </div>
-    </div>
-</div>
 
     <div id="imageModal" class="modal">
         <div class="small-modal-content">
@@ -145,15 +155,21 @@
                         <input type="file" id="modalImage" name="modalImage" accept="image/*" style="display: none;">
                         <label for="modalImage" class="upload-label">
                             <div class="image-frame-container">
-                                <img src="/public/images/cam-image.png" alt="Default image" class="default-image" id="defaultImage">
-                                <div class="image-frame-overlay">
-                                    <img src="/public/images/image-frame.png" alt="Frame" class="image-frame">
+                                <div class="image-content-wrapper">
+                                    <img src="/public/images/cam-image.png" alt="Default image" class="default-image"
+                                         id="defaultImage">
+                                    <img src="" alt="Preview" class="preview-image" id="previewImage"
+                                         style="display: none;">
+                                    <div class="image-frame-overlay">
+                                        <img src="/public/images/image-frame.png" alt="Frame" class="image-frame">
+                                    </div>
                                 </div>
                             </div>
                         </label>
+
                     </div>
                     <div class="form-button-container">
-                        <button type="submit" class="image-button">
+                        <button type="button" id="pre-save" class="image-button">
                             <img src="/public/images/done-button.png" alt="Save All">
                         </button>
                     </div>
@@ -163,27 +179,34 @@
     </div>
 
 
-<div id="ingredientModal" class="modal">
-    <div class="modal-content">
-        <button class="close-button">
-            <img src="/public/images/close-button.png" alt="Close">
-        </button>
-        <h2>Create New Ingredient</h2>
-        <form id="ingredientForm">
-            <div class="form-group">
-                <label for="ingredientName">Ingredient Name</label>
-                <input type="text" id="ingredientName" name="ingredientName" required>
+    <div id="ingredientModal" class="modal">
+        <div class="small-modal-content">
+            <div class="modal-content">
+                <button class="close-button">
+                    <img src="/public/images/close-button.png" alt="Close">
+                </button>
+                <h2>Create New Ingredient</h2>
+                <form id="ingredientForm">
+                    <div class="form-group">
+                        <label for="ingredientName">Ingredient Name</label>
+                        <input type="text" id="ingredientName" name="ingredientName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="ingredientImage">Ingredient Image</label>
+                        <input type="file" id="ingredientImage" name="ingredientImage" accept="image/*">
+                    </div>
+                    <button type="button" id="createIngredient" class="image-button">
+                        <img src="/public/images/done-button.png" alt="Save All">
+                    </button>
+                </form>
             </div>
-            <div class="form-group">
-                <label for="ingredientImage">Ingredient Image</label>
-                <input type="file" id="ingredientImage" name="ingredientImage" accept="image/*">
-            </div>
-            <button type="submit" class="image-button">
-                <img src="/public/images/done-button.png" alt="Save All">
-            </button>
-        </form>
+        </div>
     </div>
+    <script src="/public/scripts/MultiSelect.js"></script>
 </div>
-<script src="/public/scripts/MultiSelect.js"></script>
+<div class="preloader hidden">
+    <img src="/public/images/loading.gif" class="loader_img" alt="Loading..." />
 </div>
+<div class="content-blocker" id="contentBlocker"></div>
+{{>footer serverLoadTime=serverLoadTime}}
 </html>

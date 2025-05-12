@@ -4,17 +4,93 @@
 <head>
     {{> header}}
     {{> scripts}}
-    <link rel="stylesheet" href="/public/recipes-style.css" type="text/css"/>
+    <link rel="stylesheet" href="/public/all-recipes-style.css" type="text/css"/>
     <script defer src="/public/scripts/active-page.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/corejs-typeahead/1.2.1/bloodhound.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/corejs-typeahead/1.2.1/typeahead.jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <script defer src="/public/scripts/home-search-script.js"></script>
     <script defer src="/public/scripts/all-recipes.js" type="text/javascript" charset="utf-8"></script>
+    <link href="/public/MultiSelect.css" rel="stylesheet" type="text/css">
 </head>
 <body>
 <main>
     <section>
-        <div class="recipes_container">
+        <div class="search_container">
+            <div class="finder">
+                <div class="finder__outer">
+                    <div class="finder__inner" id="search">
+                        <button id="searchBtn" class="finder__icon">
+                            <img src="/public/images/search-button.png" alt="Search">
+                        </button>
+                        <input class="finder__input" id="searchBox" type="text"
+                               placeholder="search what I want today..."/>
+                    </div>
+                </div>
+            </div>
+            <div class="filter">
+                <div class="filter__outer">
+                    <div class="filter__inner" id="filter">
+                        <button type="button" class="filter-btn">
+                            <img src="/public/images/filter.png" alt="Filter">
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
+            <div class="recipes_container">
+            </div>
     </section>
+    <div class="modal-overlay" style="display: none">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <form class="filter-form">
+                <div class="filter-group">
+                    <label for="ingredients">Ingredients</label>
+                    <div id="ingredientsList">
+                        <select id="dynamicIngredients" name="dynamicIngredients"></select>
+                    </div>
+                </div>
+
+                <div class="filter-group">
+                    <label for="categories">Categories</label>
+                    <div id="categoriesList">
+                        <select id="dynamicCategories" name="dynamicCategories"></select>
+                    </div>
+                </div>
+
+                <div class="filter-group">
+                    <label for="modalTags">Tags</label>
+                    <div id="modalTagsList">
+                        <select id="dynamicTags" name="dynamicTags" multiple></select>
+                    </div>
+                </div>
+
+                <div class="filter-group">
+                    <label for="cooking-time">Cooking time (minutes)</label>
+                    <input type="range" id="cooking-time" min="0" max="320" value="60">
+                    <span id="time-value">60 minutes</span>
+                </div>
+
+                <div class="filter-actions">
+                    <button type="button" class="cancel-btn">
+                        <img src="/public/images/cancel-button.png" alt="cancel">
+                    </button>
+                    <button type="submit" class="apply-btn">
+                        <img src="/public/images/submit-button.png" alt="submit">
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script src="/public/scripts/MultiSelect.js"></script>
 </main>
 </body>
-{{> footer}}
+<div class="preloader">
+    <img src="/public/images/loading.gif" class="loader_img" alt="Loading..." />
+</div>
+<div class="content-blocker" id="contentBlocker"></div>
+{{>footer serverLoadTime=serverLoadTime}}
 </html>

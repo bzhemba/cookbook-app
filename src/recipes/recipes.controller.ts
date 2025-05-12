@@ -8,14 +8,14 @@ import {
   Body,
   Controller,
   Delete,
-  Get,
+  Get, Inject,
   Param,
   Patch,
   Post,
   Query,
   Req,
   UseFilters,
-  UseGuards
+  UseGuards, UseInterceptors
 } from "@nestjs/common";
 import { RecipesService } from "./recipes.service";
 import { Request } from "express";
@@ -27,25 +27,62 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import {HttpExceptionFilter} from "../shared/ExceptionFilter";
 import {PaginatedResultDto} from "../shared/dtos/paginated-result.dto";
 import {PaginationDto} from "../shared/dtos/pagination.dto";
+import {Cache, CACHE_MANAGER, CacheKey, CacheTTL} from "@nestjs/cache-manager";
+import {EtagInterceptor} from "../interceptors/etag.interceptor";
+import {FilterRecipesDto} from "./dto/filter-recipe.dto";
 
 @ApiTags('recipes')
 @Controller('recipes')
+@CacheTTL(50)
 @UseFilters(new HttpExceptionFilter())
 export class RecipesController {
-  constructor(private readonly recipeService: RecipesService, private eventEmitter: EventEmitter2) {}
+  constructor(
+      private readonly recipeService: RecipesService,
+      private eventEmitter: EventEmitter2,
+      @Inject(CACHE_MANAGER) private cacheManager: Cache
+  ) {}
 
   @ApiOperation({summary: 'Get recipe by text'})
   @ApiOkResponse({ type: RecipeDto })
   @ApiBadRequestResponse()
   @ApiNotFoundResponse()
-  @Get(':text')
+  @UseInterceptors(EtagInterceptor)
+  @Get('/name/:text')
+  @CacheKey('recipe_text_${{value:text}}')
   async getRecipeByText(@Param('text') text: string) {
     return await this.recipeService.getByText(text);
+  }
+
+  @ApiOperation({summary: 'Get filtered recipes'})
+  @Get('filter')
+  @ApiQuery({ name: 'categories', type: [String], required: false })
+  @ApiQuery({ name: 'tags', type: [String], required: false })
+  @ApiQuery({ name: 'ingredients', type: [String], required: false })
+  @ApiQuery({ name: 'maxCookingTime', type: Number, required: false })
+  @ApiQuery({ name: 'page', required: false, type: Number })
+  @ApiQuery({ name: 'limit', required: false, type: Number })
+  @ApiOkResponse({ type: PaginatedResultDto<RecipeDto> })
+  @ApiBadRequestResponse()
+  async filterRecipes(@Query() filterDto: FilterRecipesDto, @Query() paginationDto: PaginationDto) {
+    return this.recipeService.filterRecipes(filterDto, paginationDto);
+  }
+
+  @ApiOperation({summary: 'Get recipe by id'})
+  @ApiOkResponse({ type: RecipeDto })
+  @ApiBadRequestResponse()
+  @ApiNotFoundResponse()
+  @UseInterceptors(EtagInterceptor)
+  @Get(':id')
+  @CacheKey('recipe_id_${{value:number}}')
+  async getRecipeById(@Param('id') id: number) {
+    return await this.recipeService.getById(id);
   }
 
   @Get('/suggestions/:text')
   @ApiOkResponse({type: [String] })
   @ApiBadRequestResponse()
+  @UseInterceptors(EtagInterceptor)
+  @CacheKey('suggestions_${{value:text}}')
   async getSuggestions(@Param('text') text: string) {
     return await this.recipeService.getSuggestions(text);
   }
@@ -53,11 +90,27 @@ export class RecipesController {
   @ApiOperation({summary: 'Get all recipes'})
   @ApiOkResponse({ type: PaginatedResultDto<RecipeDto> })
   @ApiBadRequestResponse()
+  @UseInterceptors(EtagInterceptor)
   @ApiQuery({ name: 'page', required: false, type: Number })
   @ApiQuery({ name: 'limit', required: false, type: Number })
   @Get()
   async getAllRecipes(@Query() paginationDto: PaginationDto) {
-    return await this.recipeService.getAll(paginationDto);
+    const page = paginationDto.page;
+    const limit = paginationDto.limit;
+    const cacheKey = `all_recipes_page_${page}_limit_${limit}`;
+
+    const cached = await this.cacheManager.get(cacheKey);
+    if (cached) {
+      console.log(`[Cache HIT] ${cacheKey}`);
+      return cached;
+    }
+
+    console.log(`[Cache MISS] ${cacheKey}`);
+    const result = await this.recipeService.getAll(paginationDto);
+
+    await this.cacheManager.set(cacheKey, result, 50000);
+
+    return result;
   }
 
   @UseGuards(JwtAuthGuard)
@@ -68,8 +121,9 @@ export class RecipesController {
   @ApiUnauthorizedResponse()
   @ApiNotFoundResponse()
   @Post()
-  async create(@Body() createRecipeDto : CreateRecipeDto) {
+  async create(@Body() createRecipeDto: CreateRecipeDto) {
     const recipe = await this.recipeService.create(createRecipeDto);
+
     this.eventEmitter.emit('recipes', {
       type: 'RECIPE_CREATED',
       data: recipe
@@ -85,8 +139,15 @@ export class RecipesController {
   @ApiUnauthorizedResponse()
   @ApiNotFoundResponse()
   @Patch(':id')
-  async updateRecipe(@Param('id') id: number, @Body() updateProjectDto : UpdateRecipeDto, @Req() request: Request) {
-    await this.recipeService.update(request.oidc.user?.nickname, id, updateProjectDto);
+  async updateRecipe(
+      @Param('id') id: number,
+      @Body() updateProjectDto: UpdateRecipeDto,
+      @Req() request: Request
+  ) {
+    const result = await this.recipeService.update(request.oidc.user?.nickname, id, updateProjectDto);
+
+    await this.cacheManager.del(`recipe_text_${result}`);
+    return result;
   }
 
   @UseGuards(JwtAuthGuard)
@@ -98,6 +159,8 @@ export class RecipesController {
   @ApiNotFoundResponse()
   @Delete(':id')
   async deleteRecipe(@Param('id') id: number, @Req() request: Request) {
-    await this.recipeService.delete(request.oidc.user?.nickname, id);
+    const recipe = await this.recipeService.delete(request.oidc.user?.nickname, id);
+
+    await this.cacheManager.del(`recipe_text_${recipe}`);
   }
 }

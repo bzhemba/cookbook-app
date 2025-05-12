@@ -18,7 +18,6 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
         localStorage.setItem('username', username);
         console.log(`USERNAME: ${localStorage.getItem('username')}`);
         if (response.ok) {
-            alert('Login successful!');
             window.location.href = '/';
         } else {
             alert('Login failed: ' + result.message);

@@ -1,6 +1,5 @@
 import {AutoMap} from "nestjsx-automapper";
 import {ApiProperty} from "@nestjs/swagger";
-import {Optional} from "@nestjs/common";
 import {IsNotEmpty, IsOptional} from "class-validator";
 import {Field, ID, InputType} from "@nestjs/graphql";
 

@@ -7,7 +7,7 @@ import {
     Patch,
     Delete,
     UseGuards,
-    UseFilters, Query,
+    UseFilters, Query, UseInterceptors,
 } from '@nestjs/common';
 import { IngredientsService } from './ingredients.service';
 import { IngredientDto } from './dto/ingredient.dto';
@@ -24,15 +24,17 @@ import {EventEmitter2} from "@nestjs/event-emitter";
 import {HttpExceptionFilter} from "../shared/ExceptionFilter";
 import {PaginatedResultDto} from "../shared/dtos/paginated-result.dto";
 import {PaginationDto} from "../shared/dtos/pagination.dto";
+import {TimingInterceptor} from "../interceptors/timing.interceptor";
 
 @Controller('ingredients')
-@UseGuards(JwtAuthGuard)
 @UseFilters(new HttpExceptionFilter())
+@UseInterceptors(TimingInterceptor)
 export class IngredientsController {
     constructor(private readonly ingredientsService: IngredientsService, private eventEmitter: EventEmitter2) {}
 
     @Post()
     @ApiBearerAuth()
+    @UseGuards(JwtAuthGuard)
     @ApiOkResponse({type: IngredientDto })
     @ApiBadRequestResponse()
     @ApiUnauthorizedResponse()
@@ -48,7 +50,6 @@ export class IngredientsController {
     }
 
     @Get()
-    @ApiBearerAuth()
     @ApiOkResponse({ type: PaginatedResultDto<IngredientDto> })
     @ApiBadRequestResponse()
     @ApiQuery({ name: 'page', required: false, type: Number })
@@ -58,7 +59,6 @@ export class IngredientsController {
     }
 
     @Get(':id')
-    @ApiBearerAuth()
     @ApiOkResponse({type: IngredientDto })
     @ApiBadRequestResponse()
     @ApiUnauthorizedResponse()
@@ -69,6 +69,7 @@ export class IngredientsController {
 
     @Patch(':id')
     @ApiBearerAuth()
+    @UseGuards(JwtAuthGuard)
     @ApiOkResponse({type: IngredientDto })
     @ApiBadRequestResponse()
     @ApiUnauthorizedResponse()
@@ -79,6 +80,7 @@ export class IngredientsController {
 
     @Delete(':id')
     @ApiBearerAuth()
+    @UseGuards(JwtAuthGuard)
     @ApiBadRequestResponse()
     @ApiUnauthorizedResponse()
     @ApiNotFoundResponse()

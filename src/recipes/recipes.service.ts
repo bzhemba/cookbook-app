@@ -11,6 +11,12 @@ import {Category} from "../category/entities/category.entity";
 import {UpdateRecipeDto} from "./dto/update-recipe-dto";
 import {PaginationDto} from "../shared/dtos/pagination.dto";
 import {PaginatedResultDto} from "../shared/dtos/paginated-result.dto";
+import {FilterRecipesDto} from "./dto/filter-recipe.dto";
+import {RecipeIngredient} from "../ingredients/entities/recipe-ingredient.entity";
+import {MeasurementUnit} from "../dictionaries/measurement/measurement-unit.entity";
+import {ReadRecipeDto} from "./dto/read-recipe-dto";
+import {AutoMapper, mapFrom} from "nestjsx-automapper";
+import {RecipeIngredientDto} from "../ingredients/dto/recipe-ingredient.dto";
 
 @Injectable()
 export class RecipesService {
@@ -27,7 +33,40 @@ export class RecipesService {
         private readonly categoryRepository: Repository<Category>,
         @InjectRepository(Ingredient)
         private readonly ingredientRepository: Repository<Ingredient>,
-    ) {}
+        @InjectRepository(MeasurementUnit)
+        private readonly measurementRepository: Repository<MeasurementUnit>,
+        private readonly mapper: AutoMapper) {
+        mapper.createMap(RecipeIngredient, RecipeIngredientDto)
+            .forMember(
+                dest => dest.unit,
+                mapFrom(src => src.unit.symbol))
+            .forMember(
+                dest => dest.ingredient,
+                mapFrom(src => src.ingredient.name))
+            .forMember(
+                dest => dest.amount,
+                mapFrom(src => src.amount));
+        mapper.createMap(Recipe, ReadRecipeDto)
+            .forMember(
+                dest => dest.ingredients,
+                mapFrom(src => mapper.mapArray(src.ingredients, RecipeIngredientDto, RecipeIngredient)))
+            .forMember(
+                dest => dest.recipeTags,
+                mapFrom((src) => src.recipeTags.map(x => x.name))
+            )
+            .forMember(
+                dest => dest.category,
+                mapFrom((src) => src.category?.categoryTitle)
+            )
+            .forMember(
+                dest => dest.imageData,
+                mapFrom(src => src.imageData ? src.imageData.imageData : null)
+            )
+            .forMember(
+                dest => dest.createdByUser,
+                mapFrom(src => src.createdByUser ? src.createdByUser.username : null)
+            );
+    };
 
     async getByText(text: string) {
         const recipes = await this.recipeRepository.find({
@@ -35,19 +74,39 @@ export class RecipesService {
                 name: Like(`%${text}%`),
             },
             relations: {
-                createdByUser: true,
                 recipeTags: true,
                 ingredients: true,
                 category: true,
-                imageData: true
+                imageData: true,
             },
         });
 
         if (recipes.length === 0) {
-            throw new NotFoundException(`Рецепты по запросу "${text}" не найдены`);
+            throw new NotFoundException(`Recipe with substring "${text}" not found`);
         }
 
         return recipes;
+    }
+
+    async getById(id: number) {
+        const recipe = await this.recipeRepository.findOne({
+            where: {
+                id: id,
+            },
+            relations: {
+                recipeTags: true,
+                ingredients: true,
+                category: true,
+                imageData: true,
+                createdByUser: true
+            },
+        });
+
+        if (!recipe) {
+            throw new NotFoundException(`Recipe with id "${id}" not found`);
+        }
+
+        return this.mapper.map(recipe, ReadRecipeDto);
     }
 
     async getSuggestions(text: string) {
@@ -64,7 +123,7 @@ export class RecipesService {
     async getAll(paginationDto: PaginationDto): Promise<PaginatedResultDto<Recipe>> {
         const { page, limit } = paginationDto;
         const [recipes, total] = await this.recipeRepository.findAndCount({
-            relations: { createdByUser: true, recipeTags: true, ingredients: true, category: true, imageData: true},
+            relations: {recipeTags: true, ingredients: true, category: true, imageData: true},
             skip: (page - 1) * limit,
             take: limit,
         });
@@ -86,6 +145,68 @@ export class RecipesService {
                 previous: prevPage ? `/recipes?page=${prevPage}&limit=${limit}` : undefined,
                 next: nextPage ? `/recipes?page=${nextPage}&limit=${limit}` : undefined,
                 last: `/recipes?page=${lastPage}&limit=${limit}`,
+            },
+        };
+    }
+
+    async filterRecipes(
+        filterDto: FilterRecipesDto,
+        paginationDto: PaginationDto,
+    ): Promise<PaginatedResultDto<Recipe>> {
+        const { page, limit } = paginationDto;
+        const { categories, tags, ingredients, maxCookingTime } = filterDto;
+
+        const queryBuilder = this.recipeRepository
+            .createQueryBuilder('recipe')
+            .leftJoinAndSelect('recipe.createdByUser', 'createdByUser')
+            .leftJoinAndSelect('recipe.recipeTags', 'recipeTags')
+            .leftJoinAndSelect('recipe.ingredients', 'ingredients')
+            .leftJoinAndSelect('ingredients.ingredient', 'ingredient')
+            .leftJoinAndSelect('recipe.category', 'category')
+            .leftJoinAndSelect('recipe.imageData', 'imageData');
+
+
+        if (categories && categories.length > 0) {
+            queryBuilder.andWhere('category.id IN (:...categories)', { categories });
+        }
+
+        if (tags && tags.length > 0) {
+            queryBuilder.andWhere('recipeTags.id IN (:...tags)', { tags });
+        }
+
+        if (ingredients && ingredients.length > 0) {
+            queryBuilder.andWhere('ingredients.id IN (:...ingredients)', { ingredients });
+        }
+
+        if (maxCookingTime !== undefined) {
+            const totalTimeQuery = 'recipe.prepTime + recipe.cookTime';
+            queryBuilder.andWhere(`${totalTimeQuery} <= :maxTime`, { maxTime: maxCookingTime });
+        }
+
+        queryBuilder.orderBy('recipe.createdAt', 'DESC');
+
+        const [recipes, total] = await queryBuilder
+            .skip((page - 1) * limit)
+            .take(limit)
+            .getManyAndCount();
+
+        const lastPage = Math.ceil(total / limit);
+        const nextPage = page < lastPage ? page + 1 : null;
+        const prevPage = page > 1 ? page - 1 : null;
+
+        return {
+            data: recipes,
+            meta: {
+                total,
+                page,
+                limit,
+                lastPage,
+            },
+            links: {
+                first: `/recipes/filter?page=1&limit=${limit}`,
+                previous: prevPage ? `/recipes/filter?page=${prevPage}&limit=${limit}` : undefined,
+                next: nextPage ? `/recipes/filter?page=${nextPage}&limit=${limit}` : undefined,
+                last: `/recipes/filter?page=${lastPage}&limit=${limit}`,
             },
         };
     }
@@ -120,13 +241,38 @@ export class RecipesService {
         recipe.createdAt = new Date();
         recipe.imageData = recipeImage;
 
-        for (const id of createRecipeDto.ingredientIds) {
-            const ingredient = await this.ingredientRepository.findOneBy({id: id} )
-            if (!ingredient) {
-                throw new NotFoundException(`Tag with id '${id}' does not exist`);
-            }
-            recipe.ingredients.push(ingredient);
-        }
+        recipe.ingredients = await Promise.all(
+            createRecipeDto.ingredients.map(async (ingredientDto) => {
+                const ingredient = await this.ingredientRepository.findOneBy({
+                    id: ingredientDto.ingredientId
+                });
+
+                if (!ingredient) {
+                    throw new NotFoundException(
+                        `Ingredient with id '${ingredientDto.ingredientId}' not found`
+                    );
+                }
+
+                const unit = await this.measurementRepository.findOneBy({
+                    id: ingredientDto.unitId
+                });
+
+                if (!unit) {
+                    throw new NotFoundException(
+                        `Unit with id '${ingredientDto.unitId}' not found`
+                    );
+                }
+
+                const recipeIngredient = new RecipeIngredient();
+                recipeIngredient.ingredient = ingredient;
+                recipeIngredient.amount = ingredientDto.amount;
+                recipeIngredient.unit = unit;
+
+                recipe.ingredients.push(recipeIngredient)
+
+                return recipeIngredient;
+            })
+        );
 
         for (const tagId of createRecipeDto.recipeTagIds) {
             const tag = await this.recipeTagRepository.findOneBy({ id: tagId });
@@ -172,14 +318,6 @@ export class RecipesService {
         }
         if (updateRecipeDto.servings !== undefined) {
             recipe.servings = updateRecipeDto.servings;
-        }
-
-        if (updateRecipeDto.ingredients !== undefined) {
-            recipe.ingredients = updateRecipeDto.ingredients.map(ingredientDto => {
-                const ingredient = new Ingredient();
-                ingredient.name = ingredientDto.name;
-                return ingredient;
-            });
         }
 
         if (updateRecipeDto.tags !== undefined) {
