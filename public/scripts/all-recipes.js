@@ -20,7 +20,7 @@ function adjustNameTextSizeToFitBoundary(textElement, boundaryElement) {
     const boundaryRect = boundaryElement.getBoundingClientRect();
     let textRect = textElement.getBoundingClientRect();
     let fontSize = parseFloat(window.getComputedStyle(textElement).fontSize);
-    const minFontSize = 15;
+    const minFontSize = 8;
 
     while ((textRect.bottom > boundaryRect.top) && fontSize > minFontSize) {
         fontSize -= 0.5;
@@ -39,7 +39,7 @@ function adjustVerticalDescriptionTextSizeToFitBoundary(textElement, boundaryEle
     const boundaryRect = boundaryElement.getBoundingClientRect();
     let textRect = textElement.getBoundingClientRect();
     let fontSize = parseFloat(window.getComputedStyle(textElement).fontSize);
-    const minFontSize = 10;
+    const minFontSize = 8;
 
     while ((textRect.bottom > boundaryRect.top || textRect.left < boundaryRect.right) && fontSize > minFontSize) {
         fontSize -= 0.5;
@@ -90,10 +90,6 @@ function adjustAllTextsToBoundaries() {
 }
 
 const fetchApi = async (query) => {
-    contentBlocker.style.display = 'block';
-    preloader.style.display = 'flex';
-    preloader.classList.remove('hidden');
-
     recipesContainer.innerHTML = '';
 
     try {
@@ -104,7 +100,7 @@ const fetchApi = async (query) => {
         }
 
         if (query) {
-            await fetchSpecific(query);
+            await fetchSpecific(query).then(adjustAllTextsToBoundaries);
             searchInput.value = query;
             return;
         }
@@ -145,6 +141,14 @@ async function fetchSpecific(query) {
 
         const data = await response.json();
         await showData(data);
+
+        await new Promise(resolve => {
+            requestAnimationFrame(() => {
+                setTimeout(() => {
+                    resolve();
+                }, 5000);
+            });
+        });
 
     } catch (er) {
         recipes_container.innerHTML =
@@ -436,6 +440,10 @@ function renderPaginationControls() {
 }
 
 document.addEventListener("DOMContentLoaded", async function () {
+    contentBlocker.style.display = 'block';
+    preloader.style.display = 'flex';
+    preloader.classList.remove('hidden');
+
     async function loadIngredients() {
         let allIngredients = [];
         let nextUrl = "/ingredients";

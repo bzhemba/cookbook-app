@@ -1,48 +1,56 @@
 import {
   ApiBadRequestResponse,
-  ApiBearerAuth, ApiNotFoundResponse, ApiOkResponse,
-  ApiOperation, ApiQuery,
-  ApiTags, ApiUnauthorizedResponse
-} from "@nestjs/swagger";
+  ApiBearerAuth,
+  ApiNotFoundResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiQuery,
+  ApiTags,
+  ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
 import {
   Body,
   Controller,
   Delete,
-  Get, Inject,
+  Get,
+  Inject,
   Param,
-  Patch,
   Post,
   Query,
   Req,
   UseFilters,
-  UseGuards, UseInterceptors
-} from "@nestjs/common";
-import { RecipesService } from "./recipes.service";
-import { Request } from "express";
-import {RecipeDto} from "./dto/recipe.dto";
-import {CreateRecipeDto} from "./dto/create-recipe-dto";
-import {UpdateRecipeDto} from "./dto/update-recipe-dto";
-import {JwtAuthGuard} from "../auth/jwt-auth.guard";
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
+import { RecipesService } from './recipes.service';
+import { Request } from 'express';
+import { RecipeDto } from './dto/recipe.dto';
+import { CreateRecipeDto } from './dto/create-recipe-dto';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import {HttpExceptionFilter} from "../shared/ExceptionFilter";
-import {PaginatedResultDto} from "../shared/dtos/paginated-result.dto";
-import {PaginationDto} from "../shared/dtos/pagination.dto";
-import {Cache, CACHE_MANAGER, CacheKey, CacheTTL} from "@nestjs/cache-manager";
-import {EtagInterceptor} from "../interceptors/etag.interceptor";
-import {FilterRecipesDto} from "./dto/filter-recipe.dto";
+import { HttpExceptionFilter } from '../shared/ExceptionFilter';
+import { PaginatedResultDto } from '../shared/dtos/paginated-result.dto';
+import { PaginationDto } from '../shared/dtos/pagination.dto';
+import {
+  Cache,
+  CACHE_MANAGER,
+  CacheKey,
+  CacheTTL,
+} from '@nestjs/cache-manager';
+import { EtagInterceptor } from '../interceptors/etag.interceptor';
+import { FilterRecipesDto } from './dto/filter-recipe.dto';
 
-@ApiTags('recipes')
 @Controller('recipes')
 @CacheTTL(50)
 @UseFilters(new HttpExceptionFilter())
 export class RecipesController {
   constructor(
-      private readonly recipeService: RecipesService,
-      private eventEmitter: EventEmitter2,
-      @Inject(CACHE_MANAGER) private cacheManager: Cache
+    private readonly recipeService: RecipesService,
+    private eventEmitter: EventEmitter2,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
-  @ApiOperation({summary: 'Get recipe by text'})
+  @ApiOperation({ summary: 'Get recipe by text' })
   @ApiOkResponse({ type: RecipeDto })
   @ApiBadRequestResponse()
   @ApiNotFoundResponse()
@@ -53,7 +61,7 @@ export class RecipesController {
     return await this.recipeService.getByText(text);
   }
 
-  @ApiOperation({summary: 'Get filtered recipes'})
+  @ApiOperation({ summary: 'Get filtered recipes' })
   @Get('filter')
   @ApiQuery({ name: 'categories', type: [String], required: false })
   @ApiQuery({ name: 'tags', type: [String], required: false })
@@ -63,11 +71,14 @@ export class RecipesController {
   @ApiQuery({ name: 'limit', required: false, type: Number })
   @ApiOkResponse({ type: PaginatedResultDto<RecipeDto> })
   @ApiBadRequestResponse()
-  async filterRecipes(@Query() filterDto: FilterRecipesDto, @Query() paginationDto: PaginationDto) {
+  async filterRecipes(
+    @Query() filterDto: FilterRecipesDto,
+    @Query() paginationDto: PaginationDto,
+  ) {
     return this.recipeService.filterRecipes(filterDto, paginationDto);
   }
 
-  @ApiOperation({summary: 'Get recipe by id'})
+  @ApiOperation({ summary: 'Get recipe by id' })
   @ApiOkResponse({ type: RecipeDto })
   @ApiBadRequestResponse()
   @ApiNotFoundResponse()
@@ -79,7 +90,7 @@ export class RecipesController {
   }
 
   @Get('/suggestions/:text')
-  @ApiOkResponse({type: [String] })
+  @ApiOkResponse({ type: [String] })
   @ApiBadRequestResponse()
   @UseInterceptors(EtagInterceptor)
   @CacheKey('suggestions_${{value:text}}')
@@ -87,7 +98,7 @@ export class RecipesController {
     return await this.recipeService.getSuggestions(text);
   }
 
-  @ApiOperation({summary: 'Get all recipes'})
+  @ApiOperation({ summary: 'Get all recipes' })
   @ApiOkResponse({ type: PaginatedResultDto<RecipeDto> })
   @ApiBadRequestResponse()
   @UseInterceptors(EtagInterceptor)
@@ -115,8 +126,8 @@ export class RecipesController {
 
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @ApiOperation({summary: 'Create new recipe'})
-  @ApiOkResponse({type: RecipeDto })
+  @ApiOperation({ summary: 'Create new recipe' })
+  @ApiOkResponse({ type: RecipeDto })
   @ApiBadRequestResponse()
   @ApiUnauthorizedResponse()
   @ApiNotFoundResponse()
@@ -126,41 +137,21 @@ export class RecipesController {
 
     this.eventEmitter.emit('recipes', {
       type: 'RECIPE_CREATED',
-      data: recipe
+      data: recipe,
     });
-    return recipe
+    return recipe;
   }
 
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @ApiOperation({summary: 'Update recipe'})
-  @ApiOkResponse({type: RecipeDto })
-  @ApiBadRequestResponse()
-  @ApiUnauthorizedResponse()
-  @ApiNotFoundResponse()
-  @Patch(':id')
-  async updateRecipe(
-      @Param('id') id: number,
-      @Body() updateProjectDto: UpdateRecipeDto,
-      @Req() request: Request
-  ) {
-    const result = await this.recipeService.update(request.oidc.user?.nickname, id, updateProjectDto);
-
-    await this.cacheManager.del(`recipe_text_${result}`);
-    return result;
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
-  @ApiOperation({summary: 'Delete recipe by id'})
-  @ApiOkResponse({type: RecipeDto })
+  @ApiOperation({ summary: 'Delete recipe by id' })
+  @ApiOkResponse({ type: RecipeDto })
   @ApiBadRequestResponse()
   @ApiUnauthorizedResponse()
   @ApiNotFoundResponse()
   @Delete(':id')
   async deleteRecipe(@Param('id') id: number, @Req() request: Request) {
-    const recipe = await this.recipeService.delete(request.oidc.user?.nickname, id);
-
-    await this.cacheManager.del(`recipe_text_${recipe}`);
+    const nickname = request.oidc.user?.nickname as string;
+    await this.recipeService.delete(nickname, id);
   }
 }

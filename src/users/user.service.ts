@@ -1,14 +1,18 @@
-import {ConflictException, Injectable, NotFoundException} from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
-import { User } from "./entities/user.entity";
-import {CreateUserDto} from "./dto/create-user.dto";
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { User } from './entities/user.entity';
+import { CreateUserDto } from './dto/create-user.dto';
 
 @Injectable()
 export class UserService {
   constructor(
-      @InjectRepository(User)
-      private readonly userRepository: Repository<User>
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
   ) {}
 
   async getById(id: number) {
@@ -39,12 +43,16 @@ export class UserService {
     const email = userDto.email;
     const existingUser = await this.userRepository.findOneBy({ username });
     if (existingUser != null) {
-      throw new ConflictException(`User with username ${username} already exists`);
+      throw new ConflictException(
+        `User with username ${username} already exists`,
+      );
     }
 
     const existingEmail = await this.userRepository.findOneBy({ email });
     if (existingEmail != null) {
-      throw new ConflictException(`Account with this email ${existingEmail} already exists`);
+      throw new ConflictException(
+        `Account with this email ${email} already exists`,
+      );
     }
 
     user.username = username;

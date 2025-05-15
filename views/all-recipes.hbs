@@ -2,10 +2,8 @@
 <html lang="en">
 <html>
 <head>
-    {{> header}}
-    {{> scripts}}
     <link rel="stylesheet" href="/public/all-recipes-style.css" type="text/css"/>
-    <script defer src="/public/scripts/active-page.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/corejs-typeahead/1.2.1/bloodhound.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/corejs-typeahead/1.2.1/typeahead.jquery.min.js"></script>
@@ -14,6 +12,9 @@
     <script defer src="/public/scripts/home-search-script.js"></script>
     <script defer src="/public/scripts/all-recipes.js" type="text/javascript" charset="utf-8"></script>
     <link href="/public/MultiSelect.css" rel="stylesheet" type="text/css">
+    <script defer src="/public/scripts/active-page.js"></script>
+    {{> header}}
+    {{> scripts}}
 </head>
 <body>
 <main>
@@ -92,5 +93,4 @@
     <img src="/public/images/loading.gif" class="loader_img" alt="Loading..." />
 </div>
 <div class="content-blocker" id="contentBlocker"></div>
-{{>footer serverLoadTime=serverLoadTime}}
 </html>
