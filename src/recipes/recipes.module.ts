@@ -11,8 +11,6 @@ import { Category } from '../category/entities/category.entity';
 import { Ingredient } from '../ingredients/entities/ingredient.entity';
 import { RecipeTagService } from './recipe-tags.service';
 import { RecipeTagController } from './recipe-tags.controller';
-import { RecipeResolver } from './resolver/recipe.resolver';
-import { RecipeTagResolver } from './resolver/recipe-tag.resolver';
 import { CacheModule } from '@nestjs/cache-manager';
 import { MeasurementUnit } from '../dictionaries/measurement/measurement-unit.entity';
 import { MeasurementUnitService } from '../dictionaries/measurement/measurement-unit.service';
@@ -40,9 +38,7 @@ import { RecipeIngredient } from '../ingredients/entities/recipe-ingredient.enti
     RecipesService,
     MeasurementUnitService,
     RecipeTagService,
-    AutoMapper,
-    RecipeResolver,
-    RecipeTagResolver,
+    AutoMapper
   ],
 })
 export class RecipesModule {}

@@ -20,11 +20,9 @@ import {
 } from '@nestjs/swagger';
 import { NoteDto } from './dto/note.dto';
 import { HttpExceptionFilter } from '../shared/ExceptionFilter';
-import { TimingInterceptor } from '../interceptors/timing.interceptor';
 
 @Controller('notes')
 @UseFilters(new HttpExceptionFilter())
-@UseInterceptors(TimingInterceptor)
 export class NotesController {
   constructor(
     private readonly notesService: NotesService,

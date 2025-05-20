@@ -1,6 +1,5 @@
 import { Controller, Get, Res, Session, UseInterceptors } from '@nestjs/common';
 import { Response } from 'express';
-import { TimingInterceptor } from './interceptors/timing.interceptor';
 import { ApiExcludeController } from '@nestjs/swagger';
 import session from 'express-session';
 
@@ -16,7 +15,6 @@ interface CustomSession extends session.Session {
 }
 
 @ApiExcludeController()
-@UseInterceptors(TimingInterceptor)
 @Controller()
 export class AppController {
   @Get()

@@ -20,7 +20,6 @@ import { CategoryModule } from './category/category.module';
 import { AuthModule } from './auth/auth.module';
 import { ImageModule } from './shared/image.module';
 import { NotificationModule } from './notifications/notification.module';
-import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { StorageModule } from './storage/storage.module';
 import { DictionaryModule } from './dictionaries/dictionary.module';
@@ -55,15 +54,6 @@ import { RecipeIngredient } from './ingredients/entities/recipe-ingredient.entit
           RecipeIngredient,
         ],
         synchronize: true,
-      }),
-    }),
-    GraphQLModule.forRootAsync<ApolloDriverConfig>({
-      imports: [ConfigModule],
-      driver: ApolloDriver,
-      useFactory: () => ({
-        playground: true,
-        uploads: false,
-        autoSchemaFile: true,
       }),
     }),
     ConfigModule.forRoot({

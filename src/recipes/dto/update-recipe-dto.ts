@@ -4,23 +4,17 @@ import { AutoMap } from 'nestjsx-automapper';
 import { RecipeTagDto } from './recipe-tag.dto';
 import { IngredientDto } from '../../ingredients/dto/ingredient.dto';
 import { ImageDto } from '../../shared/dtos/image.dto';
-import { Field, ID, InputType } from '@nestjs/graphql';
 import { IsOptional } from 'class-validator';
 
-@InputType({ description: 'Input for updating a recipe' })
 export class UpdateRecipeDto {
-  @Field(() => ID, { description: 'Unique identifier' })
   @ApiProperty({ example: 1 })
   @AutoMap()
   id: number;
-
-  @Field({ description: 'Recipe title' })
   @ApiPropertyOptional()
   @AutoMap()
   @IsOptional()
   title?: string;
 
-  @Field({ description: 'Recipe description', nullable: true })
   @ApiPropertyOptional()
   @AutoMap()
   @IsOptional()
@@ -56,7 +50,6 @@ export class UpdateRecipeDto {
   @IsOptional()
   tags?: RecipeTagDto[];
 
-  @Field(() => ID, { description: 'Category ID' })
   @ApiPropertyOptional()
   @AutoMap()
   @IsOptional()
