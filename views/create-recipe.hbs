@@ -77,22 +77,30 @@
                     </div>
 
                     <div class="form-row">
-                        <div class="form-group">
-                            <label for="modalPrepTime">Preparation Time (minutes)</label>
-                            <input type="number" id="modalPrepTime" name="modalPrepTime" required>
+                        <div class="form-labels">
+                            <div class="form-group">
+                                <label for="modalPrepTime">Preparation Time (minutes)</label>
+                            </div>
+                            <div class="form-group">
+                                <label for="modalCookTime">Cooking Time (minutes)</label>
+                            </div>
+                            <div class="form-group">
+                                <label for="modalServings" class="servings">Servings</label>
+                            </div>
                         </div>
 
-                        <div class="form-group">
-                            <label for="modalCookTime">Cooking Time (minutes)</label>
-                            <input type="number" id="modalCookTime" name="modalCookTime" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="modalServings">Servings</label>
-                            <input type="number" id="modalServings" name="modalServings" required>
+                        <div class="form-inputs">
+                            <div class="form-group">
+                                <input type="number" id="modalPrepTime" name="modalPrepTime" required>
+                            </div>
+                            <div class="form-group">
+                                <input type="number" id="modalCookTime" name="modalCookTime" required>
+                            </div>
+                            <div class="form-group">
+                                <input type="number" id="modalServings" name="modalServings" required>
+                            </div>
                         </div>
                     </div>
-
                     <div class="form-group">
                         <label for="modalTags">Tags</label>
                         <div id="modalTagsList">
@@ -208,5 +216,4 @@
     <img src="/public/images/loading.gif" class="loader_img" alt="Loading..." />
 </div>
 <div class="content-blocker" id="contentBlocker"></div>
-{{>footer serverLoadTime=serverLoadTime}}
 </html>

@@ -16,7 +16,6 @@ body {
     margin:0;
     padding:0;
     box-sizing:border-box;
-    font-family:Verdana;
 }
 
 html{
@@ -59,6 +58,17 @@ nav > ul > li:hover a {
     font-family: "Spectral", serif;
 }
 
+.multi-select .multi-select-header, .multi-select .multi-select-option, .multi-select .multi-select-all {
+    display: flex;
+    flex-wrap: wrap;
+    box-sizing: border-box;
+    align-items: center;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 200px;
+    font-size: 16px;
+    color: #212529;
+}
 .recipes_container {
     margin-top:5%;
     row-gap:10rem;
@@ -684,11 +694,11 @@ tt-hint {
     top: 100%;
     left: 0;
     width: 95%;
-    height: 170px;
+    height: 150px;
     border-radius: 10px;
     background: url('/public/images/fork-knife2.png') no-repeat center center,
     rgba(255, 255, 255, 0.95);
-    background-size: cover;
+    background-size: contain;
     z-index: 1000;
     display: flex;
     flex-direction: column;
@@ -717,7 +727,17 @@ tt-hint {
     padding:3px 20px;
 }
 
-.finder,
+.finder {
+    border: 1px solid #fff;
+    background-color: #f6f5f0;
+    border-radius: 15px;
+    padding: 8px;
+    box-shadow: 9px 9px 16px rgba(189, 189, 189, 0.6),
+    -9px -9px 16px rgba(255, 255, 255, 0.5);
+    position: relative;
+}
+
+
 .pagination-previous,
 .pagination-next,
 .pagination-current{
@@ -770,7 +790,6 @@ tt-hint {
     background-color: transparent;
     outline: none;
     font-size: 1.7rem;
-    width: 180%;
     padding: 0.5rem;
 }
 
@@ -934,7 +953,7 @@ tt-hint {
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(255, 255, 255, 0.7);
     z-index: 1000;
     display: flex;
     justify-content: center;
@@ -989,6 +1008,7 @@ tt-hint {
 .filter-group label {
     margin-bottom: 5px;
     font-weight: bold;
+    width: 200px;
 }
 
 .filter-actions {
@@ -1019,105 +1039,6 @@ button {
     border: none;
     border-radius: 5px;
     cursor: pointer;
-}
-
-
-@media only screen and (max-width:768px){
-
-    html{
-        font-size:30%;
-    }
-    .recipes_container {
-        padding:5rem;
-    }
-
-
-    .recipe_card{
-        flex-basis:100%;
-        height:50vh;
-        margin-bottom:10rem;
-        display:flex;
-        justify-content:center;
-        align-items:center;
-    }
-
-
-    .recipe_card img{
-        width:100%;
-        height:30vh;
-        background-size:100% 100%;
-    }
-
-    .recipe_card h2 {
-        font-size:1.8rem;
-    }
-
-    .recipe_card h3{
-        font-size:1.5rem;
-        margin-bottom:1vh;
-    }
-
-    .recipe_card h5{
-        line-height:5rem;
-        font-size:1.8vh;
-        margin-bottom:2vh;
-    }
-
-    .view_recipeBtn {
-        width:70vw!important;
-        font-size:2.7rem!important;
-        padding:2rem!important;
-    }
-
-    .recipe_details{
-        width:70rem;
-        height:90rem;
-        overflow-y:scroll;
-        padding:2rem;
-        position:fixed;
-        top:50%;
-        left:50%;
-        border-radius:.7rem;
-        transform: translate(-50%  , -50%);
-        background:#f8f8f8;
-        box-shadow:
-                0 0 .5rem .1rem rgba(0,0,0,.2);
-        transition:all .2s ease-in-out;
-
-    }
-
-    .recipe_content{
-        width:80%;
-        height:40vh;
-        padding:5rem;
-        position:absolute;
-        top:10%;
-        color:#222222;
-    }
-
-    .recipe_name{
-        font-size:4.5rem!important;
-        color:#87CEFA;
-        position:absolute;
-        top:-10%;
-        margin-bottom:1rem;
-    }
-
-    .recipe_content  h2 {
-        color:#353555;
-        font-size:4rem;
-        text-transform:capitalize;
-    }
-
-    .recipe_content ul li{
-        margin-top:2rem;
-        color: #454555;
-        font-size:3.2rem;
-        line-height:5rem;
-        font-weight:300;
-        flex-basis:80%;
-    }
-
 }
 
 @media only screen and (min-height:980px){
@@ -1171,33 +1092,44 @@ button {
         line-height:5rem;
     }
 }
-@media (max-width: 850px) {
+@media (max-width: 768px) {
+    .recipe-container {
+        justify-content: space-around;
+        margin-bottom: 50px;
+    }
+
     .recipe-card {
-        width: 95% !important;
-        padding: 20px !important;
-        flex-direction: column !important;
+        height: 0;
+        padding-bottom: 133%;
     }
 
-    .recipe-card.vertical-paper .recipe-image-wrapper,
-    .recipe-card.vertical-paper .recipe-content {
-        flex: 1 1 100%;
-        padding: 0 !important;
+    .recipe-card.vertical-paper {
+        min-height: 300px !important;
     }
 
-    .recipe-card.vertical-paper .recipe-image-wrapper {
-        margin-bottom: 20px;
-        padding-right: 0;
+    .recipe-card.vertical-paper.description .recipe-name{
+        top: 15% !important;
+        left: 58% !important;
+    }
+
+    .recipe-tabs {
+        margin-left: -8px; /* Уменьшенный отступ */
+    }
+
+    .recipe-tab {
+        width: 40px; /* Уменьшенный размер вкладок */
+        height: 60px;
     }
 }
 @media (max-width: 768px) {
+
     .recipe-card.horizontal-paper.no-description .recipe-name {
         font-size: 1.2rem;
         padding: 0 15px;
     }
 }
-
-@media (max-width: 768px) {
+@supports (-webkit-touch-callout: none) and (not (-ms-ime-align: auto)) and (not (-moz-appearance: none)) {
     .tt-menu {
-        max-height: 100px;
+        width: 120%;
     }
 }

@@ -1,9 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Freehand&family=Zeyada&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap');
+
 *{
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: "Freehand", cursive;
 }
 html,body{
     height: 100%;
@@ -27,12 +28,14 @@ body{
     font-weight: 600;
     margin-bottom: 35px;
     color: #595959;
+    font-family: "Freehand", cursive;
 }
 .field{
     height: 50px;
     width: 100%;
     display: flex;
     position: relative;
+    font-family: "Spectral", serif;
 }
 .field:nth-child(2){
     margin-top: 20px;
@@ -43,6 +46,7 @@ body{
     padding-left: 45px;
     outline: none;
     border: none;
+    font-family: "Spectral", serif;
     font-size: 18px;
     background: #dde1e7;
     color: #595959;
@@ -90,6 +94,7 @@ button{
     font-size: 18px;
     line-height: 50px;
     font-weight: 600;
+    font-family: "Freehand", cursive;
     background: #dde1e7;
     border-radius: 25px;
     border: none;

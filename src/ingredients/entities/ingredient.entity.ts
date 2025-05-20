@@ -1,21 +1,24 @@
-import {AutoMap} from "nestjsx-automapper";
-import {Column, Entity, JoinTable, ManyToMany, OneToOne, PrimaryGeneratedColumn} from "typeorm";
-import {Recipe} from "../../recipes/entities/recipe.entity";
-import {JoinColumn} from "typeorm";
-import {Image} from "../../shared/entities/image.entity";
-import {Optional} from "@nestjs/common";
+import { AutoMap } from 'nestjsx-automapper';
+import {
+  Column,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { Recipe } from '../../recipes/entities/recipe.entity';
 
 @Entity('ingredient')
 export class Ingredient {
-    @AutoMap()
-    @PrimaryGeneratedColumn()
-    id: number;
+  @AutoMap()
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @AutoMap()
-    @Column()
-    name: string;
+  @AutoMap()
+  @Column()
+  name: string;
 
-    @ManyToMany(() => Recipe, recipe => recipe.ingredients)
-    @JoinTable()
-    recipes: Recipe[];
+  @ManyToMany(() => Recipe, (recipe) => recipe.ingredients)
+  @JoinTable()
+  recipes: Recipe[];
 }
