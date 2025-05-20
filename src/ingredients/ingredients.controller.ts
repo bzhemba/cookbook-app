@@ -27,11 +27,9 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { HttpExceptionFilter } from '../shared/ExceptionFilter';
 import { PaginatedResultDto } from '../shared/dtos/paginated-result.dto';
 import { PaginationDto } from '../shared/dtos/pagination.dto';
-import { TimingInterceptor } from '../interceptors/timing.interceptor';
 
 @Controller('ingredients')
 @UseFilters(new HttpExceptionFilter())
-@UseInterceptors(TimingInterceptor)
 export class IngredientsController {
   constructor(
     private readonly ingredientsService: IngredientsService,

@@ -1,10 +1,7 @@
-import { Field, InputType } from '@nestjs/graphql';
 import { ApiProperty } from '@nestjs/swagger';
 import { AutoMap } from 'nestjsx-automapper';
 
-@InputType()
 export class CreateUserDto {
-  @Field(() => String)
   @AutoMap()
   @ApiProperty({
     example: 'john_doe',
@@ -14,7 +11,6 @@ export class CreateUserDto {
   })
   username: string;
 
-  @Field(() => String)
   @AutoMap()
   @ApiProperty({
     example: 'user@example.com',
@@ -23,7 +19,6 @@ export class CreateUserDto {
   })
   email: string;
 
-  @Field(() => String)
   @AutoMap()
   @ApiProperty({
     example: 'P@ssw0rd!',

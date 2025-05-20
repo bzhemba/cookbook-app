@@ -2,13 +2,11 @@ import { Controller, Get, UseFilters, UseInterceptors } from '@nestjs/common';
 
 import { ApiBadRequestResponse, ApiOkResponse } from '@nestjs/swagger';
 import { HttpExceptionFilter } from '../shared/ExceptionFilter';
-import { TimingInterceptor } from '../interceptors/timing.interceptor';
 import { MeasurementUnit } from './measurement/measurement-unit.entity';
 import { MeasurementUnitService } from './measurement/measurement-unit.service';
 
 @Controller('dictionary')
 @UseFilters(new HttpExceptionFilter())
-@UseInterceptors(TimingInterceptor)
 export class DictionaryController {
   constructor(
     private readonly measurementUnitService: MeasurementUnitService,

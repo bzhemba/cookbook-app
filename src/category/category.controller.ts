@@ -12,11 +12,9 @@ import {
 import { CategoryService } from './category.service';
 import { CategoryDto } from './dto/category.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { TimingInterceptor } from '../interceptors/timing.interceptor';
 import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('categories')
-@UseInterceptors(TimingInterceptor)
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
