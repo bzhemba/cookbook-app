@@ -500,10 +500,10 @@ document.addEventListener("DOMContentLoaded", async function () {
 
         ingredientDiv.innerHTML = `
         <span class="ingredient-name">${name}</span>
-        <input type="number" 
-               class="ingredient-amount" 
-               placeholder="Amount" 
-               min="0" 
+        <input type="number"
+               class="ingredient-amount"
+               placeholder="Amount"
+               min="0"
                step="0.01"
                required>
         <select class="ingredient-unit">

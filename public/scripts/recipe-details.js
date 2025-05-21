@@ -97,17 +97,17 @@ const showData = async (resp) => {
             <div class="text-boundary name-boundary"></div>
             ${description ? `<p class="recipe-description">${description}</p>` : ''}
             <div class="text-boundary description-boundary"></div>
-            
+
             <div class="recipe-details">
                 ${category ? `<p class="recipe-category"><strong>Category:</strong> ${category}</p>` : ''}
-                
+
                 <div class="recipe-section">
                     <h2>Ingredients:</h2>
                     <ul class="ingredients-list">
                         ${ingredientsList}
                     </ul>
                 </div>
-                
+
                 ${instructionsContent}
                 ${tagsContent}
                 ${createdByContent}

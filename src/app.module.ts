@@ -20,7 +20,6 @@ import { CategoryModule } from './category/category.module';
 import { AuthModule } from './auth/auth.module';
 import { ImageModule } from './shared/image.module';
 import { NotificationModule } from './notifications/notification.module';
-import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { StorageModule } from './storage/storage.module';
 import { DictionaryModule } from './dictionaries/dictionary.module';
 import { MeasurementUnit } from './dictionaries/measurement/measurement-unit.entity';

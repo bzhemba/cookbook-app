@@ -54,8 +54,6 @@ async function bootstrap() {
   SwaggerModule.setup('swagger/api', app, document);
 
   const port = configService.get<number>('PORT') || 3000;
-
-  app.use(json({ limit: '50mb' }));
   await app.listen(port);
   console.log(`Application is running on http://localhost:${port}`);
 }
