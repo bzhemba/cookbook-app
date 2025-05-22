@@ -6,7 +6,6 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { join } from 'path';
 import * as hbs from 'hbs';
 import { ValidationPipe } from '@nestjs/common';
-import { json } from 'express';
 import * as session from 'express-session';
 import { SessionOptions } from 'express-session';
 
