@@ -36,7 +36,7 @@ export class IngredientsController {
     private eventEmitter: EventEmitter2,
   ) {}
 
-  @Post()
+  @Post('create')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @ApiOkResponse({ type: IngredientDto })

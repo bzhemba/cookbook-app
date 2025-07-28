@@ -1,7 +1,9 @@
 <div class="login-container">
     {{#if isAuthenticated}}
-        <a>Welcome, {{user.username}}!</a>
-        <a href="/logout">Logout</a>
+        <div class="user-menu">
+            <a href="/profile">Welcome, {{user.username}}!</a>
+            <a href="/logout">Logout</a>
+        </div>
         <nav class="nav">
             <ul>
                 <li><a href="all-recipes" class="all-recipes">all recipes</a></li>
@@ -12,6 +14,9 @@
             </ul>
         </nav>
     {{else}}
+        <div class="user-menu">
+            <a href="/login">Login</a>
+        </div>
         <nav class="nav">
             <ul>
                 <li><a href="all-recipes" class="all-recipes">all recipes</a></li>
@@ -19,7 +24,6 @@
                 <li><a href="table" class="table">some examples</a></li>
             </ul>
         </nav>
-        <a href="login">Login</a>
     {{/if}}
 </div>
 

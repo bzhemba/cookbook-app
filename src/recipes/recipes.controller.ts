@@ -39,6 +39,7 @@ import {
 } from '@nestjs/cache-manager';
 import { EtagInterceptor } from '../interceptors/etag.interceptor';
 import { FilterRecipesDto } from './dto/filter-recipe.dto';
+import {UpdateRecipeDto} from "./dto/update-recipe-dto";
 
 @Controller('recipes')
 @CacheTTL(50)
@@ -137,6 +138,24 @@ export class RecipesController {
 
     this.eventEmitter.emit('recipes', {
       type: 'RECIPE_CREATED',
+      data: recipe,
+    });
+    return recipe;
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Create new recipe' })
+  @ApiOkResponse({ type: RecipeDto })
+  @ApiBadRequestResponse()
+  @ApiUnauthorizedResponse()
+  @ApiNotFoundResponse()
+  @Post('update')
+  async update(@Body() updateRecipeDto: UpdateRecipeDto) {
+    const recipe = await this.recipeService.update(updateRecipeDto);
+
+    this.eventEmitter.emit('recipes', {
+      type: 'RECIPE_UPDATED',
       data: recipe,
     });
     return recipe;

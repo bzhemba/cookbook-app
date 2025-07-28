@@ -1,5 +1,9 @@
 import { ApiProperty, ApiHideProperty } from '@nestjs/swagger';
 import { AutoMap } from 'nestjsx-automapper';
+import {ManyToMany} from "typeorm";
+import {Recipe} from "../../recipes/entities/recipe.entity";
+import {RecipeDto} from "../../recipes/dto/recipe.dto";
+import {CollectionDto} from "../../collections/dto/collection.dto";
 
 export class UserDto {
   @AutoMap()
@@ -18,6 +22,14 @@ export class UserDto {
   @ApiHideProperty()
   password: string;
 
+  @ApiProperty({ type: () => RecipeDto, isArray: true })
+  @AutoMap()
+  createdRecipes: RecipeDto[];
+
+  @ApiProperty({ type: () => RecipeDto, isArray: true })
+  @AutoMap()
+  savedCollections: CollectionDto[];
+
   @AutoMap()
   @ApiProperty({
     example: 'https://example.com/avatar.jpg',
@@ -25,4 +37,5 @@ export class UserDto {
     required: false,
   })
   imageData?: string;
+
 }

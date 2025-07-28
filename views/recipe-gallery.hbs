@@ -7,20 +7,215 @@
 </head>
 <body>
 <div class="container">
-    <h2 class="heading-text">Find your <span>inspiration</span></h2>
-    <div class="image-gallery">
-        {{#each data.columns}}
-            <div class="column">
-                {{#each this.images}}
-                    <div class="image-item">
-                        <img src="{{src}}" alt="{{title}}">
-                        <h3>{{title}}</h3>
-                    </div>
-                {{/each}}
-            </div>
-        {{/each}}
+    <div class="header-container">
+        <h2 class="heading-text"><span id="collectionTitle">collection</span> collection</h2>
+        <button id="editCollectionBtn" class="edit-btn">Edit Collection</button>
+    </div>
+    <div class="image-gallery" id="imageGallery">
     </div>
 </div>
 
+<script>
+    let isEditMode = false;
+    let collectionId;
+    document.getElementById('editCollectionBtn').addEventListener('click', toggleEditMode);
+
+    document.addEventListener('DOMContentLoaded', async () => {
+        const params = new URLSearchParams(window.location.search);
+        const collectionIdentifier = params.get('id');
+        console.log(collectionIdentifier)
+        const isMyRecipes = collectionIdentifier === "my-recipes";
+        console.log(isMyRecipes)
+
+        const token = localStorage.getItem('auth_token');
+        const username = localStorage.getItem('username');
+
+        if (!token) {
+            console.error('No token found, please log in');
+            window.location.href = '/login';
+            return;
+        }
+        if (!token) {
+            window.location.href = '/login';
+            return;
+        }
+
+        try {
+            let recipes = [];
+            let collectionName = 'My Recipes';
+
+            if (isMyRecipes) {
+                const response = await fetch(`/users/username/${username}`, {
+                    method: "GET",
+                    headers: {
+                        "Authorization": `Bearer ${token}`,
+                    }
+                });
+
+                if (!response.ok) {
+                    return new Error('Failed to fetch profile data');
+                }
+
+                const userData = await response.json();
+                recipes = userData.recipes;
+            } else {
+                collectionId = parseInt(collectionIdentifier);
+                if (collectionId == null) {
+                    return new Error('Invalid collection ID');
+                }
+
+                const response = await fetch(`/collections/id/${collectionId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                const collection = await response.json();
+                console.log(collection);
+                recipes = collection.recipesConnection;
+                collectionName = collection.name;
+            }
+
+            document.getElementById('collectionTitle').textContent = collectionName;
+
+            await renderGallery(recipes);
+        } catch (error) {
+            console.error('Error loading data:', error);
+            document.getElementById('imageGallery').innerHTML = `
+            <div class="error-message">
+                Failed to load recipes. Please try again later.
+            </div>
+        `;
+        }
+    });
+
+    async function renderGallery(recipes) {
+        const gallery = document.getElementById('imageGallery');
+        gallery.innerHTML = '';
+        gallery.classList.toggle('edit-mode', isEditMode);
+
+        const columns = [
+            document.createElement('div'),
+            document.createElement('div'),
+            document.createElement('div')
+        ];
+
+        columns.forEach(col => {
+            col.className = 'column';
+            gallery.appendChild(col);
+        });
+
+        for (const recipe of recipes) {
+            const index = recipes.indexOf(recipe);
+            const columnIndex = index % 3;
+            console.log(recipe.recipe)
+            const recipeCard = await createRecipeCard(recipe.recipe, isEditMode);
+            columns[columnIndex].appendChild(recipeCard);
+        }
+
+        const collectionCards = document.querySelectorAll('.collection-card:not(.main-collection)');
+
+        collectionCards.forEach(card => {
+            const deleteBtn = document.createElement('button');
+            deleteBtn.className = 'delete-collection-btn';
+            deleteBtn.innerHTML = '×';
+            deleteBtn.onclick = (e) => {
+                e.stopPropagation();
+                const collectionTitle = card.querySelector('.collection-title').textContent;
+                showDeleteModal(card, collectionTitle);
+            };
+            card.appendChild(deleteBtn);
+        });
+    }
+
+    async function createRecipeCard(recipe, showDeleteBtn = false) {
+        const item = document.createElement('div');
+        item.className = 'image-item';
+
+        const img = document.createElement('img');
+        const imageKey = recipe.imageData?.imageData;
+
+        try {
+            img.src = imageKey ? await fetchImageUrl(imageKey) : '/public/images/recipe-placeholder.jpg';
+            img.alt = recipe.title || recipe.name;
+            img.classList.add('recipe-image');
+            item.appendChild(img);
+
+            const overlay = document.createElement('div');
+            overlay.className = 'recipe-overlay';
+
+            const overlayBg = document.createElement('div');
+            overlayBg.className = 'overlay-bg';
+            overlay.appendChild(overlayBg);
+
+            const title = document.createElement('h3');
+            title.className = 'recipe-title';
+            title.textContent = recipe.title || recipe.name;
+            overlay.appendChild(title);
+
+            item.appendChild(overlay);
+
+            const deleteBtn = document.createElement('button');
+            deleteBtn.className = 'delete-btn';
+            deleteBtn.innerHTML = '&times;';
+            deleteBtn.style.display = showDeleteBtn ? 'flex' : 'none';
+
+            deleteBtn.addEventListener('click', async (e) => {
+                e.stopPropagation();
+                if (confirm('Are you sure you want to remove this recipe from the collection?')) {
+                    await removeRecipeFromCollection(recipe.id);
+                }
+            });
+
+            item.appendChild(deleteBtn);
+
+
+        } catch (error) {
+            console.error('Error loading image:', error);
+            item.appendChild(img);
+        }
+
+        item.addEventListener('click', () => {
+            if (isEditMode) return;
+            const recipeId = encodeURIComponent(btoa(recipe.id))
+            window.location.href = `/recipe-details?recipe=${recipeId}`;
+        });
+
+        return item;
+    }
+
+    function toggleEditMode() {
+        isEditMode = !isEditMode;
+        const btn = document.getElementById('editCollectionBtn');
+        btn.textContent = isEditMode ? 'Done Editing' : 'Edit Collection';
+        const gallery = document.getElementById('imageGallery');
+        console.log(gallery)
+        gallery.classList.toggle('edit-mode', isEditMode);
+        updateDeleteButtonsVisibility();
+    }
+
+    function updateDeleteButtonsVisibility() {
+        const deleteButtons = document.querySelectorAll('.delete-btn');
+        deleteButtons.forEach(btn => {
+            btn.style.display = isEditMode ? 'flex' : 'none';
+        });
+    }
+
+    async function removeRecipeFromCollection(recipeId) {
+        const url = `/collections/${encodeURIComponent(collectionId)}/recipes/${encodeURIComponent(recipeId)}`;
+        await fetch(url, {
+            method: "DELETE",
+        });
+
+    }
+
+    async function fetchImageUrl(key) {
+        const url = `/images/${encodeURIComponent(key)}`;
+        const response = await fetch(url, {
+            method: "GET",
+        });
+
+        return response.text();
+    }
+</script>
 </body>
 </html>

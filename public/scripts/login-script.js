@@ -16,7 +16,7 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
         const result = await response.json();
         localStorage.setItem('auth_token', result.access_token);
         localStorage.setItem('username', username);
-        console.log(`USERNAME: ${localStorage.getItem('username')}`);
+
         if (response.ok) {
             window.location.href = '/';
         } else {

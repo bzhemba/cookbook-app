@@ -1,34 +1,17 @@
-import {
-  ApiBadRequestResponse,
-  ApiBearerAuth,
-  ApiForbiddenResponse,
-  ApiNotFoundResponse,
-  ApiOkResponse,
-  ApiOperation,
-  ApiTags,
-} from '@nestjs/swagger';
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Post,
-  UseGuards,
-} from '@nestjs/common';
-import { UserService } from './user.service';
-import { AutoMapper } from 'nestjsx-automapper';
-import { UserDto } from './dto/user.dto';
-import { CreateUserDto } from './dto/create-user.dto';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import {ApiBadRequestResponse, ApiBearerAuth, ApiNotFoundResponse, ApiOkResponse, ApiOperation,} from '@nestjs/swagger';
+import {Body, Controller, Delete, Get, Param, Post, UseGuards,} from '@nestjs/common';
+import {UserService} from './user.service';
+import {UserDto} from './dto/user.dto';
+import {CreateUserDto} from './dto/create-user.dto';
+import {JwtAuthGuard} from '../auth/jwt-auth.guard';
 
 @Controller('users')
 @UseGuards(JwtAuthGuard)
 export class UserController {
   constructor(
     private readonly userService: UserService,
-    private readonly mapper: AutoMapper,
-  ) {}
+  ) {
+  }
 
   @ApiOperation({ summary: 'Create user' })
   @ApiNotFoundResponse()
@@ -46,17 +29,16 @@ export class UserController {
   @Get(':id')
   async getById(@Param('id') id: number) {
     const user = await this.userService.getById(id);
-    return this.mapper.map(user, UserDto);
+    return user;
   }
 
-  @ApiOperation({ summary: 'Get all users' })
-  @ApiForbiddenResponse()
+  @ApiOperation({ summary: 'Get user by username' })
+  @ApiNotFoundResponse()
   @ApiBearerAuth()
-  @ApiOkResponse({ type: UserDto, isArray: true })
-  @Get()
-  async findAll() {
-    const users = await this.userService.getAll();
-    return this.mapper.mapArray(users, UserDto);
+  @ApiOkResponse({ type: UserDto })
+  @Get('/username/:username')
+  async getByUsername(@Param('username') username: string) {
+    return await this.userService.getByUsername(username);
   }
 
   @ApiOperation({ summary: 'Delete user by id' })

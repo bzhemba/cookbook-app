@@ -333,13 +333,9 @@ export class RecipesService {
     return recipe;
   }
 
-  async update(
-    username: string,
-    id: number,
-    updateRecipeDto: UpdateRecipeDto,
-  ): Promise<Recipe> {
+  async update(updateRecipeDto: UpdateRecipeDto): Promise<Recipe> {
     const recipe = await this.recipeRepository.findOne({
-      where: { id },
+      where: { id: updateRecipeDto.id },
       relations: {
         createdByUser: true,
         recipeTags: true,
@@ -350,18 +346,11 @@ export class RecipesService {
     });
 
     if (!recipe) {
-      throw new NotFoundException(`Recipe with id '${id}' does not exist`);
+      throw new NotFoundException(`Recipe with id '${updateRecipeDto.id}' does not exist`);
     }
 
-    const user = await this.userRepository.findOneBy({ username: username });
-    if (!user || recipe.createdByUser !== user) {
-      throw new NotFoundException(
-        `User with name '${username}' can't update this recipe`,
-      );
-    }
-
-    if (updateRecipeDto.title !== undefined) {
-      recipe.name = updateRecipeDto.title;
+    if (updateRecipeDto.name !== undefined) {
+      recipe.name = updateRecipeDto.name;
     }
     if (updateRecipeDto.description !== undefined) {
       recipe.description = updateRecipeDto.description;
@@ -369,57 +358,10 @@ export class RecipesService {
     if (updateRecipeDto.instructions !== undefined) {
       recipe.instructions = updateRecipeDto.instructions;
     }
-    if (updateRecipeDto.prepTime !== undefined) {
-      recipe.prepTime = updateRecipeDto.prepTime;
-    }
-    if (updateRecipeDto.cookTime !== undefined) {
-      recipe.cookTime = updateRecipeDto.cookTime;
-    }
-    if (updateRecipeDto.servings !== undefined) {
-      recipe.servings = updateRecipeDto.servings;
-    }
 
-    if (updateRecipeDto.tags !== undefined) {
-      recipe.recipeTags = await Promise.all(
-        updateRecipeDto.tags.map(async (tagDto) => {
-          const tag = await this.recipeTagRepository.findOneBy({
-            id: tagDto.id,
-          });
-          if (!tag) {
-            throw new NotFoundException(
-              `Tag with id '${tagDto.id}' does not exist`,
-            );
-          }
-          return tag;
-        }),
-      );
-    }
-
-    if (updateRecipeDto.categoryId !== undefined) {
-      const category = await this.categoryRepository.findOneBy({
-        id: updateRecipeDto.categoryId,
-      });
-      if (!category) {
-        throw new NotFoundException(
-          `Category with id '${updateRecipeDto.categoryId}' does not exist`,
-        );
-      }
-      recipe.category = category;
-    }
-
-    if (updateRecipeDto.imageData !== undefined) {
-      const image = await this.imageRepository.findOneBy({
-        id: updateRecipeDto.imageData.id,
-      });
-      if (!image) {
-        throw new NotFoundException(
-          `image with id '${updateRecipeDto.imageData.id}' does not exist`,
-        );
-      }
-      recipe.imageData = image;
-    }
 
     recipe.updatedAt = new Date();
+
 
     await this.recipeRepository.save(recipe);
     return recipe;

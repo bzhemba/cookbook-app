@@ -9,6 +9,7 @@ import {
 import { AutoMap } from 'nestjsx-automapper';
 import { Recipe } from '../../recipes/entities/recipe.entity';
 import { Image } from '../../shared/entities/image.entity';
+import {Collection} from "../../collections/entities/collection.entity";
 
 @Entity('user')
 export class User {
@@ -36,4 +37,8 @@ export class User {
   @AutoMap()
   @OneToMany(() => Recipe, (recipe) => recipe.createdByUser, { cascade: true })
   recipes: Recipe[];
+
+  @AutoMap()
+  @OneToMany(() => Collection, (collection) => collection.createdByUser, { cascade: true })
+  collections: Collection[];
 }

@@ -1,4 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Freehand&family=Zeyada&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap');
+
 * {
     margin: 0;
     padding: 0;
@@ -13,6 +15,7 @@ nav{
     position: relative;
     top: 10px;
 }
+
 nav > ul {
     display: flex;
     justify-content: space-evenly;
@@ -42,10 +45,9 @@ nav > ul > li:hover a {
 }
 body {
     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #FCFDAF;
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center;
+    background-image: url("/public/images/background.jpg");
+    background-size: 700px;
+    background-repeat: repeat;
     display: flex;
     flex-direction: column;
     min-height: 100vh;
@@ -74,20 +76,106 @@ body {
 .image-gallery .column {
     display: flex;
     flex-direction: column;
+    flex: 1;
     gap: 10px;
 }
 
 .image-item {
     position: relative;
+    margin-bottom: 20px;
+    overflow: hidden;
+    border-radius: 8px;
+    width: fit-content;
+}
+
+.image-item:hover {
     cursor: pointer;
-    flex: 1;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.edit-mode .image-item:hover {
+    cursor: default;
+}
+
+.recipe-image {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+    border-radius: 8px;
+    transition: transform 0.3s ease;
+}
+
+.recipe-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    opacity: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.3s ease;
+    background-color: transparent;
+}
+
+.overlay-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('/public/images/dash.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    z-index: 1;
+}
+
+.recipe-title {
+    position: relative;
+    font-family: "Spectral", serif;
+    color: #632024;
+    font-size: 1.5rem;
+    text-align: center;
+    padding: 15px;
+    z-index: 2;
+    transform: translateY(20px);
+    transition: transform 0.3s ease;
+}
+
+
+.image-item:hover .recipe-overlay {
+    opacity: 1;
+}
+
+.recipe-image {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+    border-radius: 8px;
+    transition: transform 0.3s ease;
+}
+
+.image-item:hover .recipe-image {
+    transform: scale(1.03);
+}
+
+.vertical-rotate {
+    width: auto;
+    height: 100%;
+    transform: rotate(90deg);
+    transform-origin: center center;
 }
 
 .image-item img {
-    width: 100%;
+    width: 500px;
     border-radius: 5px;
-    height: 100%;
-    object-fit: cover;
+    object-fit: contain;
 }
 
 footer {
@@ -108,8 +196,6 @@ footer {
 }
 
 .login-container {
-    display: grid;
-    grid-template-columns: 1fr auto;
     padding: 10px;
 }
 .login-container a {
@@ -140,8 +226,15 @@ footer {
     .image-item {
         flex: 1;
     }
-}
 
+    .image-item img {
+        width: 500px;
+        border-radius: 5px;
+        height: 400px;
+        object-fit: contain;
+    }
+
+}
 
 .overlay {
     position: absolute;
@@ -161,3 +254,103 @@ footer {
 .image-item:hover .overlay {
     transform: scale(1);
 }
+
+.user-menu {
+    display: flex;
+    gap: 82%;
+    align-items: center;
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.edit-btn {
+    background-color: transparent;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-image: url("images/edit.png");
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 150px;
+    height: 150px;
+}
+
+.delete-btn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background-image: url("images/close-button.png");
+    background-color: transparent;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    border: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.image-item:hover .delete-btn:not(.always-visible) {
+    opacity: 1;
+}
+
+.delete-btn.always-visible {
+    opacity: 1;
+    display: flex;
+}
+
+.image-item:hover .delete-btn {
+    opacity: 1;
+}
+
+.edit-mode .delete-btn {
+    opacity: 1;
+}
+
+
+@media (max-width: 768px) {
+
+    body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background-image: url("/public/images/background.jpg");
+        background-size: 300px;
+        background-repeat: repeat;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        overflow-y: auto;
+    }
+
+    nav > ul {
+        gap: 5px;
+        padding: 5px 2px;
+    }
+
+    nav > ul > li {
+        margin: 0 5px;
+        padding: 5px 0;
+    }
+
+    .login-container nav a {
+        font-size: 19px;
+    }
+
+    .login-container  a {
+        margin: 1px;
+    }
+}
+

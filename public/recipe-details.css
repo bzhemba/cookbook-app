@@ -68,10 +68,9 @@ nav > ul > li:hover a {
 }
 
 .login-container {
-    display: grid;
-    grid-template-columns: 1fr auto;
     padding: 10px;
 }
+
 .login-container a {
     margin: 15px;
     text-decoration: none;
@@ -91,6 +90,52 @@ nav > ul > li:hover a {
 
 .login-container .activeLink {
     color: black;
+}
+.toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 15px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    max-width: 300px;
+    transform: translateX(0);
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+
+.toast.fade-out {
+    transform: translateX(100%);
+    opacity: 0;
+}
+
+.toast-icon {
+    font-size: 1.5em;
+}
+
+.toast-content {
+    flex: 1;
+}
+
+.toast-close {
+    background: none;
+    border: none;
+    font-size: 1.2em;
+    cursor: pointer;
+    padding: 0 0 0 10px;
+    color: #666;
+}
+
+.toast.recipe_updated {
+    border-left: 4px solid #2196F3;
+}
+
+.toast.recipe_deleted {
+    border-left: 4px solid #F44336;
 }
 
 .preloader {
@@ -155,10 +200,6 @@ nav > ul > li:hover a {
     flex-direction: column;
 }
 
-.recipe-image-wrapper {
-    overflow: hidden;
-}
-
 .recipe-image {
     height: 100%;
     object-fit: cover;
@@ -201,6 +242,100 @@ nav > ul > li:hover a {
 
 .recipe-section {
     margin-bottom: 25px;
+}
+
+.edit-controls {
+    text-align: right;
+}
+
+.edit-controls button {
+    width: 150px;
+    height: 150px;
+    padding: 0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-left: 10px;
+    background-color: transparent;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    transition: opacity 0.3s;
+}
+
+.edit-btn {
+    background-image: url('images/edit.png');
+}
+
+.save-btn {
+    background-image: url('images/save.png');
+}
+
+.cancel-btn {
+    background-image: url('images/cancel.png');
+}
+
+.edit-btn:hover, .save-btn:hover, .cancel-btn:hover {
+    opacity: 0.9;
+}
+
+.hidden {
+    display: none;
+}
+
+.editable {
+    background-color: rgba(255, 255, 0, 0.1);
+    padding: 5px;
+    border-radius: 4px;
+    outline: 1px dashed #ccc;
+}
+
+[contenteditable="true"]:focus {
+    background-color: rgba(255, 255, 0, 0.2);
+    outline: 1px solid #4CAF50;
+}
+
+.servings-control {
+    margin: 15px 0;
+    padding: 10px;
+    background: #f9f9f9;
+    border-radius: 8px;
+    display: inline-block;
+}
+
+.servings-selector {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.servings-btn {
+    width: 70px;
+    height: 70px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 70px 70px;
+}
+
+.plus-btn {
+    background-image: url('images/plus.png');
+    background-color: transparent;
+}
+
+.minus-btn {
+    background-image: url('images/minus.png');
+    background-color: transparent;
+}
+
+
+.servings-count {
+    font-size: 18px;
+    font-weight: bold;
+    min-width: 30px;
+    text-align: center;
 }
 
 .recipe-section h4 {
@@ -281,6 +416,32 @@ strong{
     margin-bottom: 20px;
 }
 
+.nutrition-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+
+.nutrition-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    background-color: white;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.nutrition-label {
+    font-weight: 600;
+    color: #555;
+}
+
+.nutrition-value {
+    font-weight: 700;
+    color: #333;
+}
+
 .modal {
     display: none;
     position: fixed;
@@ -300,6 +461,134 @@ strong{
     max-width: 90%;
     max-height: 80vh;
     animation: zoom 0.3s;
+}
+
+.save-to-collection-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+
+.save-to-collection-btn img {
+    width: 50px;
+    height: 50px;
+    transition: opacity 0.3s ease;
+}
+
+.save-to-collection-btn:hover img {
+    content: url('images/filled-collections.png');
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.7);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 5% auto;
+    padding: 20px;
+    border-radius: 10px;
+    width: 50%;
+    max-width: 500px;
+    overflow-y: scroll;
+}
+
+
+#collectionNameInput {
+    width: 100%;
+    padding: 10px;
+    margin: 15px 0;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.modal-actions button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+#cancelCollectionBtn {
+    background-color: #f1f1f1;
+}
+
+#confirmCollectionBtn {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.collection-item {
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.collection-item:hover {
+    background-color: #f5f5f5;
+}
+h3, p{
+    font-family: "Spectral", serif;
+}
+
+#createNewCollectionBtn {
+    margin: 10px 0;
+    padding: 10px;
+    width: 100%;
+    background-color: transparent;
+    color: #555;
+    font-family: "Spectral", serif;
+    border: 2px dashed #999;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+}
+
+#createNewCollectionBtn:hover {
+    border-color: #666;
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+#createNewCollectionBtn::before {
+    content: "+";
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.user-menu {
+    display: flex;
+    gap: 82%;
+    align-items: center;
 }
 
 @keyframes zoom {
@@ -326,6 +615,12 @@ strong{
     .modal-content {
         max-width: 95%;
         max-height: 70vh;
+        overflow-y: scroll;
+    }
+
+    body {
+        background-image: url("./images/cook.png");
+        background-position: left 60%;
     }
 
     .close {
@@ -343,6 +638,12 @@ strong{
     }
 
     .ingredients-list {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    .nutrition-grid {
         grid-template-columns: 1fr;
     }
 }

@@ -581,7 +581,7 @@ window.addEventListener('load', async () => {
 
     document.querySelectorAll('.recipe-card').forEach(card => {
         card.addEventListener('click', function() {
-            const encodedId = encodeURIComponent(btoa(this.id.split('-')[2])); // Двойное кодирование
+            const encodedId = encodeURIComponent(btoa(this.id.split('-')[2]));
             window.openRecipePage(encodedId);
         });
     });
