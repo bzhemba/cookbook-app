@@ -1,7 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { AutoMap } from 'nestjsx-automapper';
 
-import {IsArray, IsOptional} from 'class-validator';
+import { IsOptional } from 'class-validator';
 
 export class UpdateRecipeDto {
   @ApiProperty({ example: 1 })

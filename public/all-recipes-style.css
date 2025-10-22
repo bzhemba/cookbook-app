@@ -135,7 +135,6 @@ nav > ul > li:hover a {
     box-sizing: border-box;
 }
 
-
 .recipe-card.horizontal-paper.description .recipe-name {
     font-family: "Zeyada", cursive;
     position: relative;
@@ -153,8 +152,7 @@ nav > ul > li:hover a {
 
 .recipe-card.vertical-paper.description .text-overlay {
     position: relative;
-    left: 7%;
-    width: 40%;
+    width: 90%;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -345,6 +343,7 @@ nav > ul > li:hover a {
 
 .recipe-name {
     cursor: pointer;
+    text-overflow-ellipsis: auto;
 }
 
 .recipe-tab:hover {

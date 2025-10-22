@@ -64,6 +64,10 @@ nav > ul > li:hover a {
     transform: scale(1.03);
 }
 
+h3, p{
+    font-family: "Spectral", serif;
+}
+
 .activeLink {
     color: black;
 }
@@ -100,7 +104,7 @@ delete-collection-btn {
     color: white;
     border: none;
     cursor: pointer;
-    display: none; /* По умолчанию скрыта */
+    display: none;
     align-items: center;
     justify-content: center;
     font-size: 16px;
@@ -108,7 +112,7 @@ delete-collection-btn {
 }
 
 .collection-card:hover .delete-collection-btn {
-    display: flex; /* Показываем при наведении */
+    display: flex;
 }
 
 .modal {
@@ -124,6 +128,10 @@ delete-collection-btn {
     align-items: center;
 }
 
+.close-modal:hover{
+    cursor: pointer;
+}
+
 .modal-content {
     background-color: #fefefe;
     padding: 20px;
@@ -136,10 +144,17 @@ delete-collection-btn {
     animation: modalFadeIn 0.3s ease-out;
 }
 
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: auto;
+}
+
 .collection-info {
-    position: relative; /* Делаем контейнер относительным для абсолютного позиционирования кнопки */
+    position: relative;
     padding: 15px;
-    padding-right: 40px; /* Оставляем место для кнопки */
+    padding-right: 40px;
 }
 
 .preloader {
@@ -226,14 +241,28 @@ delete-collection-btn {
     }
 }
 
+#cancelDeleteBtn,
+#confirmDeleteBtn
+{
+    color: white;
+    border-radius: 12px;
+    font-family: "Spectral", serif;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 8px 16px;
+}
 
 #confirmDeleteBtn {
     background-color: #ff4444;
-    color: white;
 }
 
 #confirmDeleteBtn:hover {
     background-color: #cc0000;
+}
+
+#cancelDeleteBtn:hover {
+    background-color: darkgrey;
 }
 
 @media (min-width: 768px) {
@@ -260,8 +289,8 @@ delete-collection-btn {
 
 .collection-cover {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(2, 120px);
+    grid-template-columns: repeat(1, 1fr);
+    grid-template-rows: repeat(1, 220px);
     gap: 2px;
     height: 244px;
     overflow: hidden;
@@ -271,6 +300,10 @@ delete-collection-btn {
     width: 100%;
     height: 100%;
     object-fit: contain;
+    will-change: transform;
+    contain: content;
+    backface-visibility: hidden;
+    transform: translateZ(0);
 }
 
 .collection-info {
@@ -293,7 +326,7 @@ delete-collection-btn {
 }
 
 .main-collection {
-    grid-column: 1 / -1; /* Лучше чем span 3, так как адаптируется к любому количеству колонок */
+    grid-column: 1 / -1;
     display: grid;
     grid-template-columns: 1fr;
 }

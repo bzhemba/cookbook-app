@@ -1,18 +1,10 @@
-import { Controller, Get, Res, Session, UseInterceptors } from '@nestjs/common';
+import { Controller, Get, Res, Session } from '@nestjs/common';
 import { Response } from 'express';
 import { ApiExcludeController } from '@nestjs/swagger';
-import session from 'express-session';
-
-interface UserSession {
-  user?: {
-    id: string;
-    name: string;
-  };
-}
-
-interface CustomSession extends session.Session {
-  customProperty?: string;
-}
+import {
+  CustomSession,
+  UserSession,
+} from './auth/interface/session.interfaces';
 
 @ApiExcludeController()
 @Controller()

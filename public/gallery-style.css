@@ -54,6 +54,158 @@ body {
     overflow-y: auto;
 }
 
+.preloader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    transition: opacity 0.75s, visibility 0.75s;
+}
+
+.preloader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1001;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+
+.preloader.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.content-blocker {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.7);
+    z-index: 1000;
+    display: none;
+}
+
+.loader_img {
+    width: 40%;
+    height: 40%;
+    object-fit: contain;
+}
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.7);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: #fefefe;
+    padding: 20px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 500px;
+    max-height: 80vh;
+    overflow-y: auto;
+    margin: 0;
+    animation: modalFadeIn 0.3s ease-out;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: auto;
+}
+
+
+.image-loading {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f0f0f0;
+}
+
+.delete-collection-btn {
+    position: absolute;
+    top: 40px;
+    right: 10px;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background-color: #632024;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.delete-collection-btn:hover {
+    background-color: #cc0000;
+    transform: scale(1.1);
+}
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+#cancelDeleteBtn,
+#confirmDeleteBtn
+{
+    color: white;
+    border-radius: 12px;
+    font-family: "Spectral", serif;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 8px 16px;
+}
+
+#confirmDeleteBtn {
+    background-color: #ff4444;
+}
+
+#confirmDeleteBtn:hover {
+    background-color: #cc0000;
+}
+
+#cancelDeleteBtn:hover {
+    background-color: darkgrey;
+}
+
 .container {
     padding: 40px 5%;
 }
@@ -90,7 +242,6 @@ body {
 
 .image-item:hover {
     cursor: pointer;
-    opacity: 1;
     transform: translateY(0);
 }
 
@@ -150,6 +301,7 @@ body {
 
 .image-item:hover .recipe-overlay {
     opacity: 1;
+    z-index: 11;
 }
 
 .recipe-image {
@@ -282,6 +434,10 @@ footer {
     height: 150px;
 }
 
+.edit-btn.edit-mode {
+    background-image: url("images/done-button.png");
+}
+
 .delete-btn {
     position: absolute;
     top: 5px;
@@ -319,8 +475,16 @@ footer {
 
 .edit-mode .delete-btn {
     opacity: 1;
+    z-index: 12;
 }
 
+.close-modal:hover{
+    cursor: pointer;
+}
+
+h3, p{
+    font-family: "Spectral", serif;
+}
 
 @media (max-width: 768px) {
 

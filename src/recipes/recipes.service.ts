@@ -21,6 +21,7 @@ import { MeasurementUnit } from '../dictionaries/measurement/measurement-unit.en
 import { ReadRecipeDto } from './dto/read-recipe-dto';
 import { AutoMapper, mapFrom } from 'nestjsx-automapper';
 import { RecipeIngredientDto } from '../ingredients/dto/recipe-ingredient.dto';
+import { DeleteRecipeDto } from './dto/delete-recipe-dto';
 
 @Injectable()
 export class RecipesService {
@@ -346,7 +347,9 @@ export class RecipesService {
     });
 
     if (!recipe) {
-      throw new NotFoundException(`Recipe with id '${updateRecipeDto.id}' does not exist`);
+      throw new NotFoundException(
+        `Recipe with id '${updateRecipeDto.id}' does not exist`,
+      );
     }
 
     if (updateRecipeDto.name !== undefined) {
@@ -359,16 +362,18 @@ export class RecipesService {
       recipe.instructions = updateRecipeDto.instructions;
     }
 
-
     recipe.updatedAt = new Date();
-
 
     await this.recipeRepository.save(recipe);
     return recipe;
   }
 
-  async delete(username: string, id: number) {
-    const user = await this.userRepository.findOneBy({ username: username });
+  async delete(deleteRecipeDto: DeleteRecipeDto) {
+    const username = deleteRecipeDto.username;
+    const recipeId = deleteRecipeDto.id;
+    const user = await this.userRepository.findOneBy({
+      username: username,
+    });
     if (!user) {
       throw new NotFoundException(
         `User with name '${username}' does not exist`,
@@ -376,17 +381,21 @@ export class RecipesService {
     }
 
     const recipe = await this.recipeRepository.findOne({
-      where: { id },
+      where: { id: recipeId },
       relations: { createdByUser: true },
     });
     if (!recipe) {
-      throw new NotFoundException(`Recipe with id '${id}' does not exist`);
+      throw new NotFoundException(
+        `Recipe with id '${recipeId}' does not exist`,
+      );
     }
 
     if (recipe.createdByUser?.username !== username) {
-      throw new ForbiddenException(`User can't delete project with id ${id}`);
+      throw new ForbiddenException(
+        `User can't delete recipe with id ${recipeId}`,
+      );
     }
 
-    await this.recipeRepository.delete(id);
+    await this.recipeRepository.delete(recipeId);
   }
 }

@@ -5,7 +5,6 @@ import {
   ApiOkResponse,
   ApiOperation,
   ApiQuery,
-  ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import {
@@ -17,13 +16,11 @@ import {
   Param,
   Post,
   Query,
-  Req,
   UseFilters,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { RecipesService } from './recipes.service';
-import { Request } from 'express';
 import { RecipeDto } from './dto/recipe.dto';
 import { CreateRecipeDto } from './dto/create-recipe-dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -39,7 +36,8 @@ import {
 } from '@nestjs/cache-manager';
 import { EtagInterceptor } from '../interceptors/etag.interceptor';
 import { FilterRecipesDto } from './dto/filter-recipe.dto';
-import {UpdateRecipeDto} from "./dto/update-recipe-dto";
+import { UpdateRecipeDto } from './dto/update-recipe-dto';
+import { DeleteRecipeDto } from './dto/delete-recipe-dto';
 
 @Controller('recipes')
 @CacheTTL(50)
@@ -164,13 +162,16 @@ export class RecipesController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Delete recipe by id' })
-  @ApiOkResponse({ type: RecipeDto })
+  @ApiOkResponse()
   @ApiBadRequestResponse()
   @ApiUnauthorizedResponse()
   @ApiNotFoundResponse()
-  @Delete(':id')
-  async deleteRecipe(@Param('id') id: number, @Req() request: Request) {
-    const nickname = request.oidc.user?.nickname as string;
-    await this.recipeService.delete(nickname, id);
+  @Delete('delete')
+  async delete(@Body() deleteRecipeDto: DeleteRecipeDto) {
+    await this.recipeService.delete(deleteRecipeDto);
+
+    this.eventEmitter.emit('recipes', {
+      type: 'RECIPE_DELETED',
+    });
   }
 }

@@ -218,6 +218,12 @@ nav > ul > li:hover a {
     justify-content: center;
 }
 
+
+.placeholder-img {
+    width: 450px;
+    height: 300px;
+}
+
 .text-overlay {
     padding: 25px;
 }
@@ -634,7 +640,7 @@ h3, p{
     }
 
     .recipe-image-wrapper {
-        height: 200px;
+        height: 100%;
     }
 
     .ingredients-list {

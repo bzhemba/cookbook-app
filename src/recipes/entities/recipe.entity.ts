@@ -23,7 +23,9 @@ export class Recipe {
   id: number;
 
   @AutoMap()
-  @ManyToOne(() => User, (user) => user.recipes, { onDelete: 'CASCADE' })
+  @ManyToOne(() => User, (user) => user.recipes, {
+    onDelete: 'CASCADE',
+  })
   createdByUser: User | null;
 
   @AutoMap()
@@ -35,7 +37,10 @@ export class Recipe {
   description: string;
 
   @AutoMap()
-  @OneToMany(() => RecipeIngredient, (ri) => ri.recipe)
+  @OneToMany(() => RecipeIngredient, (ri) => ri.recipe, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
   ingredients: RecipeIngredient[];
 
   @AutoMap()
@@ -55,7 +60,10 @@ export class Recipe {
   servings: number;
 
   @AutoMap()
-  @ManyToMany(() => RecipeTag, (tag) => tag.recipes, { cascade: true })
+  @ManyToMany(() => RecipeTag, (tag) => tag.recipes, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
   @JoinTable()
   recipeTags: RecipeTag[];
 

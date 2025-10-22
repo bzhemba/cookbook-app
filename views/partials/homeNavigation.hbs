@@ -1,16 +1,16 @@
 <div class="login-container">
     {{#if isAuthenticated}}
         <div class="user-menu">
-            <a href="/profile">Welcome, {{user.username}}!</a>
+            <a href="/profile">Welcome, {{user.name}}!</a>
             <a href="/logout">Logout</a>
         </div>
         <nav class="nav">
             <ul>
-                <li><a href="all-recipes" class="all-recipes">all recipes</a></li>
-                <li><a href="recipe-gallery" class="recipe-gallery">inspiration</a></li>
-                <li><a href="table" class="table">some examples</a></li>
-                <li><a href="create-recipe" class="create-recipe">create recipe</a></li>
-                <li><a href="notes" class="notes">notes</a></li>
+                <li><a href="/all-recipes" class="all-recipes">all recipes</a></li>
+                <li><a href="/recipe-gallery" class="recipe-gallery">inspiration</a></li>
+                <li><a href="/table" class="table">some examples</a></li>
+                <li><a href="/create-recipe" class="create-recipe">create recipe</a></li>
+                <li><a href="/notes" class="notes">notes</a></li>
             </ul>
         </nav>
     {{else}}
@@ -19,9 +19,9 @@
         </div>
         <nav class="nav">
             <ul>
-                <li><a href="all-recipes" class="all-recipes">all recipes</a></li>
-                <li><a href="recipe-gallery" class="recipe-gallery">inspiration</a></li>
-                <li><a href="table" class="table">some examples</a></li>
+                <li><a href="/all-recipes" class="all-recipes">all recipes</a></li>
+                <li><a href="/recipe-gallery" class="recipe-gallery">inspiration</a></li>
+                <li><a href="/table" class="table">some examples</a></li>
             </ul>
         </nav>
     {{/if}}
