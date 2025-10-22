@@ -151,7 +151,7 @@
     </div>
 
     <div id="imageModal" class="modal">
-        <div class="small-modal-content">
+        <div class="large-image-modal-content">
             <div class="modal-content">
                 <button class="close-button">
                     <img src="/public/images/close-button.png" alt="Close">
@@ -188,7 +188,7 @@
 
 
     <div id="ingredientModal" class="modal">
-        <div class="small-modal-content">
+        <div class="large-ingredient-modal-content">
             <div class="modal-content">
                 <button class="close-button">
                     <img src="/public/images/close-button.png" alt="Close">
@@ -203,17 +203,35 @@
                         <label for="ingredientImage">Ingredient Image</label>
                         <input type="file" id="ingredientImage" name="ingredientImage" accept="image/*">
                     </div>
-                    <button type="button" id="createIngredient" class="image-button">
-                        <img src="/public/images/done-button.png" alt="Save All">
-                    </button>
+
+                    <div class="nutrition-row">
+                        <span class="nutrition-label">Calories (per 100g)</span>
+                        <input type="number" step="0.1" id="calories" name="calories" class="nutrition-input">
+                    </div>
+                    <div class="nutrition-row">
+                        <span class="nutrition-label">Protein (g per 100g)</span>
+                        <input type="number" step="0.1" id="protein" name="protein" class="nutrition-input">
+                    </div>
+                    <div class="nutrition-row">
+                        <span class="nutrition-label">Fat (g per 100g)</span>
+                        <input type="number" step="0.1" id="fat" name="fat" class="nutrition-input">
+                    </div>
+                    <div class="nutrition-row">
+                        <span class="nutrition-label">Carbohydrates (g per 100g)</span>
+                        <input type="number" step="0.1" id="carbohydrates" name="carbohydrates" class="nutrition-input">
+                    </div>
+
+                    <div class="form-button-container">
+                        <button type="button" id="createIngredient" class="image-button">
+                            <img src="/public/images/done-button.png" alt="Save All">
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>
     </div>
+    </div>
     <script src="/public/scripts/MultiSelect.js"></script>
 </div>
-<div class="preloader hidden">
-    <img src="/public/images/loading.gif" class="loader_img" alt="Loading..." />
-</div>
-<div class="content-blocker" id="contentBlocker"></div>
+{{> preloader}}
 </html>

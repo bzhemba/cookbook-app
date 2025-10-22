@@ -70,11 +70,6 @@ body {
     box-sizing: border-box;
 }
 
-.login-container {
-    display: grid;
-    grid-template-columns: 1fr auto;
-}
-
 .login-container a {
     margin: 15px;
     text-decoration: none;
@@ -98,6 +93,39 @@ body {
 
 .form-group {
     padding: 10px;
+}
+
+.form-group input[type="number"] {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.nutrition-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    width: 100%;
+}
+
+.nutrition-label {
+    flex: 1;
+    font-weight: 500;
+    margin-right: 20px;
+    text-align: left;
+}
+
+.nutrition-input {
+    flex: 0 0 120px;
+    width: 120px;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    text-align: right;
 }
 
 label {
@@ -197,6 +225,30 @@ select {
     padding: 0;
 }
 
+.large-ingredient-modal-content {
+    background-image: url("./images/modal-large.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100% 100%;
+    width: 800px;
+    height: 700px;
+    margin: 20px auto;
+    position: relative;
+    padding: 0;
+}
+
+.large-image-modal-content {
+    background-image: url("./images/modal-large.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100% 100%;
+    width: 800px;
+    height: 450px;
+    margin: 20px auto;
+    position: relative;
+    padding: 0;
+}
+
 .modal-content {
     width: 60%;
     padding: 20px;
@@ -224,6 +276,13 @@ select {
 .form-button-container {
     display: flex;
     justify-content: center;
+    width: 100%;
+}
+
+.multi-select.dynamic .multi-select-header {
+    width: 100%;
+}
+.multi-select.dynamic .multi-select-options .multi-select-option {
     width: 100%;
 }
 
@@ -258,7 +317,7 @@ select {
 .form-row {
     display: flex;
     flex-direction: column;
-    gap: 8px; /* Отступ между строками лейблов и инпутов */
+    gap: 8px;
 }
 
 .form-labels, .form-inputs {
@@ -435,7 +494,9 @@ select {
     background-size: contain;
     background-repeat: no-repeat;
     z-index: 10;
+    pointer-events: none;
 }
+
 
 .action-title {
     width: 250px;

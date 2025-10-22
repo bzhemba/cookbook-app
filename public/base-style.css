@@ -92,7 +92,7 @@ nav > ul > li:hover a {
 body {
     background-color: #FCFDAF;
     background-image: url("./images/cook3.png"), url("./images/cook9.png"), url("./images/cook5.png"), url("./images/cook6.png"), url("./images/cook12.png");
-    background-position: right 6%, left 5%, center 8%, left 95%, right 70%;
+    background-position: right 19%, left 25%, center 8%, left 95%, right 80%;
     background-repeat: no-repeat;
     background-size: 300px, 260px, 250px, 300px, 300px;
     display: flex;
@@ -320,11 +320,11 @@ tr:nth-child(odd) td {
         word-break: break-all;
     }
 }
+
 .login-container {
-    display: grid;
-    grid-template-columns: 1fr auto;
     padding: 10px;
 }
+
 .login-container a {
     margin: 15px;
     text-decoration: none;
@@ -346,32 +346,54 @@ tr:nth-child(odd) td {
     margin: 0;
 }
 
-/*...............................*/
-@media (max-width: 768px) {
-    .book_wrapper {
-        display: none;
-    }
+.user-menu {
+    display: flex;
+    gap: 80%;
+    align-items: center;
 }
 
 @media (max-width: 768px) {
+    body {
+        background-color: #FCFDAF;
+        background-image:  url("./images/cook5.png"), url("./images/cook6.png"), url("./images/cook12.png");
+        background-position: center 8%, left 80%, right 40%;
+        background-repeat: no-repeat;
+        background-size: 250px, 300px, 300px;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+    }
+
     .finder__input {
         font-size: 0.8em;
+        width: 110%;
     }
 
     .finder__icon {
         width: 30px;
         height: 30px;
     }
-}
 
-@media (max-width: 768px) {
-    .finder__input {
-        font-size: 0.8em;
+    nav > ul {
+        gap: 5px;
+        padding: 5px 2px;
     }
 
-    .finder__icon {
-        width: 30px;
-        height: 30px;
+    nav > ul > li {
+        margin: 0 5px;
+        padding: 5px 0;
+    }
+
+    .login-container nav a {
+        font-size: 19px;
+    }
+
+    .login-container  a {
+        margin: 1px;
+    }
+
+    .user-menu {
+        gap: 40%;
     }
 }
 

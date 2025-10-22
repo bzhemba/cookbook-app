@@ -3,7 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { UserService } from '../users/user.service';
 import * as bcrypt from 'bcrypt';
 import { CreateUserDto } from '../users/dto/create-user.dto';
-import { Session } from 'express-openid-connect';
+import { UserSession } from './interface/session.interfaces';
 
 @Injectable()
 export class AuthService {
@@ -31,7 +31,7 @@ export class AuthService {
   async logIn(
     username: string,
     pass: string,
-    session: Session,
+    session: UserSession,
   ): Promise<{ access_token: string }> {
     const user = await this.userService.getByUsername(username);
     if (!user) {
@@ -44,7 +44,7 @@ export class AuthService {
     }
 
     const payload = { sub: user.id, username: user.username };
-    session.user = { username };
+    session.user = { id: user.id.toString(), name: user.username };
     const token = this.jwtService.sign(payload);
 
     return {

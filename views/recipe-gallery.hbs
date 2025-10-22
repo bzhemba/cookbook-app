@@ -1,26 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="stylesheet" href="/public/gallery-style.css"/>
-    {{> header}}
-    {{> scripts}}
+  <link rel="stylesheet" href="/public/gallery-style.css" />
+  {{> header}}
+  {{> scripts}}
 </head>
 <body>
 <div class="container">
-    <h2 class="heading-text">Find your <span>inspiration</span></h2>
-    <div class="image-gallery">
-        {{#each data.columns}}
-            <div class="column">
-                {{#each this.images}}
-                    <div class="image-item">
-                        <img src="{{src}}" alt="{{title}}">
-                        <h3>{{title}}</h3>
-                    </div>
-                {{/each}}
-            </div>
-        {{/each}}
-    </div>
+  <div class="header-container">
+    <h2 class="heading-text" id="headingText" style="opacity:0">
+      <span id="collectionTitle" style="font-weight: bold;"></span>
+      <span id="staticText"> collection</span>
+    </h2>
+    <button id="editCollectionBtn" class="edit-btn"></button>
+  </div>
+  <div class="image-gallery" id="imageGallery"></div>
 </div>
-
+{{> preloader}}
+<script src="/public/scripts/recipe-gallery.js" type="module"></script>
 </body>
 </html>

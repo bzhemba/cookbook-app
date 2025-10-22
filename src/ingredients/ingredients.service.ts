@@ -20,6 +20,10 @@ export class IngredientsService {
   async create(ingredientDto: CreateIngredientDto): Promise<Ingredient> {
     const ingredient = new Ingredient();
     ingredient.name = ingredientDto.name;
+    ingredient.fat = ingredientDto.fat;
+    ingredient.carbohydrates = ingredientDto.carbohydrates;
+    ingredient.protein = ingredientDto.protein;
+    ingredient.calories = ingredientDto.calories;
 
     return this.ingredientRepository.save(ingredient);
   }

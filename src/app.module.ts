@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -24,6 +23,9 @@ import { StorageModule } from './storage/storage.module';
 import { DictionaryModule } from './dictionaries/dictionary.module';
 import { MeasurementUnit } from './dictionaries/measurement/measurement-unit.entity';
 import { RecipeIngredient } from './ingredients/entities/recipe-ingredient.entity';
+import { Collection } from './collections/entities/collection.entity';
+import { CollectionsModule } from './collections/collections.module';
+import { CollectionRecipe } from './collections/entities/collection-recipe.entity';
 
 @Module({
   imports: [
@@ -50,6 +52,8 @@ import { RecipeIngredient } from './ingredients/entities/recipe-ingredient.entit
           Ingredient,
           RecipeTag,
           MeasurementUnit,
+          Collection,
+          CollectionRecipe,
           RecipeIngredient,
         ],
         synchronize: true,
@@ -70,10 +74,10 @@ import { RecipeIngredient } from './ingredients/entities/recipe-ingredient.entit
     AuthModule,
     ImageModule,
     IngredientsModule,
+    CollectionsModule,
     NotificationModule,
     DictionaryModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {}

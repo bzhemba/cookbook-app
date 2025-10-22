@@ -26,6 +26,9 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     addIngredientButton.addEventListener("click", () => {
         ingredientModal.style.display = "block";
+        document.body.style.overflow = 'hidden';
+        document.body.style.position = 'fixed';
+        document.body.style.width = '100%';
     });
 
     closeModal.addEventListener("click", () => {
@@ -36,6 +39,12 @@ document.addEventListener("DOMContentLoaded", async function () {
         const ingredientName = document.getElementById("ingredientName").value;
         const ingredientImageFile = ingredientImageInput.files[0];
         const token = localStorage.getItem('auth_token');
+
+        const calories = parseFloat(document.getElementById("calories").value) || null;
+        const protein = parseFloat(document.getElementById("protein").value) || null;
+        const fat = parseFloat(document.getElementById("fat").value) || null;
+        const carbohydrates = parseFloat(document.getElementById("carbohydrates").value) || null;
+
         let imageId = null;
 
         if (!ingredientName) {
@@ -48,9 +57,11 @@ document.addEventListener("DOMContentLoaded", async function () {
                 imageId = await uploadImage(ingredientImageFile, token);
             }
 
-            const newIngredient = await createIngredient(ingredientName, imageId, token);
+            const newIngredient = await createIngredient(
+                ingredientName, imageId, calories, protein, fat, carbohydrates, token);
+
             ingredientSelect.addOption(newIngredient.id, newIngredient.name);
-            ingredientForm.reset()
+            ingredientForm.reset();
 
         } catch (error) {
             console.error("Error creating ingredient:", error);
@@ -60,13 +71,22 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     document.getElementById('ingredientsBtn').onclick = function () {
         document.getElementById('ingredientsModal').style.display = 'block';
+        document.body.style.overflow = 'hidden';
+        document.body.style.position = 'fixed';
+        document.body.style.width = '100%';
     }
 
     document.getElementById('imageBtn').onclick = function () {
         document.getElementById('imageModal').style.display = 'block';
+        document.body.style.overflow = 'hidden';
+        document.body.style.position = 'fixed';
+        document.body.style.width = '100%';
     }
     document.getElementById('detailsBtn').onclick = function () {
         document.getElementById('combinedModal').style.display = 'block';
+        document.body.style.overflow = 'hidden';
+        document.body.style.position = 'fixed';
+        document.body.style.width = '100%';
     }
 
     document.querySelectorAll('.close-button').forEach(function (closeBtn) {
@@ -96,12 +116,18 @@ document.addEventListener("DOMContentLoaded", async function () {
             checkAllFlags();
 
             this.closest('.modal').style.display = 'none';
+            document.body.style.overflow = '';
+            document.body.style.position = '';
+            document.body.style.width = '';
         }
     });
 
     window.onclick = function (event) {
         if (event.target.className === 'modal') {
             event.target.style.display = 'none';
+            document.body.style.overflow = '';
+            document.body.style.position = '';
+            document.body.style.width = '';
         }
     }
 
@@ -157,15 +183,19 @@ document.addEventListener("DOMContentLoaded", async function () {
         return imageData.id;
     }
 
-    async function createIngredient(name, imageId, token) {
+    async function createIngredient(name, imageId, calories, protein, fat, carbohydrates, token) {
         const ingredientDto = {
             name: name,
+            protein: protein,
+            fat: fat,
+            carbohydrates: carbohydrates,
+            calories: calories,
             imageId: imageId,
         };
 
         console.log(ingredientDto);
 
-        const response = await fetch("/ingredients", {
+        const response = await fetch("/ingredients/create", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -395,10 +425,10 @@ document.addEventListener("DOMContentLoaded", async function () {
             search: true,
             selectAll: false,
             listAll: false,
-            onSelect: function(id, name, element) {
+            onSelect: function (id, name, element) {
                 addIngredientToSelectedList(id, name);
             },
-            onUnselect: function(id, element) {
+            onUnselect: function (id, element) {
                 removeIngredientFromSelectedList(id);
             }
         });
@@ -468,7 +498,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         const result = await response.json();
 
         await Promise.all(result.map(async (value) => {
-            const { id, name, symbol } = value;
+            const {id, name, symbol} = value;
 
             cachedMeasurements.push(value);
         }));
@@ -519,7 +549,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         });
 
         container.appendChild(ingredientDiv);
-        selectedIngredients[id] = { id, name, element: ingredientDiv };
+        selectedIngredients[id] = {id, name, element: ingredientDiv};
     }
 
 
@@ -530,7 +560,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         delete selectedIngredients[id];
     }
 
-    document.getElementById('pre-save').addEventListener('click', function() {
+    document.getElementById('pre-save').addEventListener('click', function () {
 
         document.querySelectorAll('.selected-ingredient').forEach(item => {
             ingredients.push({
@@ -552,4 +582,7 @@ function closeModalAndReset(modalId, formId = null) {
         if (form) form.reset();
     }
     modal.style.display = 'none';
+    document.body.style.overflow = '';
+    document.body.style.position = '';
+    document.body.style.width = '';
 }

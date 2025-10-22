@@ -8,7 +8,9 @@ export class RecipeIngredient {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Recipe, (recipe) => recipe.ingredients)
+  @ManyToOne(() => Recipe, (recipe) => recipe.ingredients, {
+    onDelete: 'CASCADE',
+  })
   recipe: Recipe;
 
   @ManyToOne(() => Ingredient, { eager: true })
